@@ -27,7 +27,7 @@
 			field.embedFonts = true;
 			field.defaultTextFormat = defFormat;
 			//
-			if (defText) setText(defText);
+			if (defText) text=defText;
 		}
 		public function set text(s:String):void {
 			setText(s, true);
