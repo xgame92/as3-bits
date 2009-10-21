@@ -1,4 +1,4 @@
-﻿package  {
+﻿package net.tw.text {
 	import flash.display.*;
 	import flash.geom.Matrix;
 	import flash.text.*;
@@ -13,7 +13,7 @@
 		protected var _colorFrom:uint;
 		protected var _colorTo:uint;
 		//
-		public function GradientText(defFormat:TextFormat, colorFrom:uint=0xff0000, colorTo:uint=0x00ff00, defText:String=null) {
+		public function GradientText(defFormat:TextFormat, colorFrom:uint=0xffffff, colorTo:uint=0x444444, defText:String=null) {
 			super();
 			//
 			_colorFrom=colorFrom;

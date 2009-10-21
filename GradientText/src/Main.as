@@ -3,6 +3,7 @@
 	import flash.events.*;
 	import flash.filters.DropShadowFilter;
 	import flash.text.TextFormat;
+	import net.tw.text.GradientText;
 	/**
 	 * @author Quentin T - http://toki-woki.net
 	 */
@@ -22,9 +23,9 @@
 		private function init(e:Event = null):void {
 			removeEventListener(Event.ADDED_TO_STAGE, init);
 			//
-			gt=new GradientText(new TextFormat("georgia", 50), 0xeeeeee, 0x666666, 'Gradient text, homie.');
+			gt=new GradientText(new TextFormat("georgia", 50), 0xeeeeee, 0x666666);
 			gt.filters=[new DropShadowFilter(1, 90, 0, 1, 0, 0)];
-			placeField();
+			onMove();
 			addChild(gt);
 			//
 			stage.addEventListener(MouseEvent.MOUSE_MOVE, onMove);
@@ -37,6 +38,7 @@
 		private function onMove(e:MouseEvent=null):void {
 			var f:TextFormat=new TextFormat();
 			f.size=stage.mouseX/10;
+			gt.text='Gradient text, '+Math.round(f.size as Number)+'px.';
 			gt.setFormat(f);
 			placeField();
 		}

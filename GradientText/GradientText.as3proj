@@ -7,9 +7,9 @@
     <movie path="bin\GradientText.swf" />
     <movie fps="30" />
     <movie width="560" />
-    <movie height="200" />
+    <movie height="140" />
     <movie version="9" />
-    <movie background="#17181E" />
+    <movie background="#282828" />
   </output>
   <!-- Other classes to be compiled into your SWF -->
   <classpaths>
