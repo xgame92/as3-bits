@@ -7,7 +7,7 @@
 	/**
 	 * @author Quentin T - http://toki-woki.net
 	 */
-	public class Main extends Sprite {
+	public class GradientTextDemo extends Sprite {
 		[Embed(source="impact.ttf", fontFamily="impact")]
 		public var fontClass1:String;
 		//
@@ -16,7 +16,7 @@
 		//
 		private var gt:GradientText;
 		//
-		public function Main():void {
+		public function GradientTextDemo():void {
 			if (stage) init();
 			else addEventListener(Event.ADDED_TO_STAGE, init);
 		}
@@ -32,14 +32,14 @@
 			stage.addEventListener(MouseEvent.CLICK, onClick);
 		}
 		private function onClick(e:MouseEvent):void {
-			gt.setFormat(new TextFormat(gt.getFormat().font=='georgia' ? 'impact' : 'georgia'));
+			gt.format=new TextFormat(gt.format.font=='georgia' ? 'impact' : 'georgia');
 			placeField();
 		}
 		private function onMove(e:MouseEvent=null):void {
 			var f:TextFormat=new TextFormat();
 			f.size=stage.mouseX/10;
-			gt.text='Gradient text, '+Math.round(f.size as Number)+'px.';
-			gt.setFormat(f);
+			gt.setText('Gradient text, '+Math.round(f.size as Number)+'px.');
+			gt.format=f;
 			placeField();
 		}
 		protected function placeField():void {

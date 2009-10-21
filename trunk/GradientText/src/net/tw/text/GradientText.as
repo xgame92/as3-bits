@@ -13,11 +13,13 @@
 		protected var _colorFrom:uint;
 		protected var _colorTo:uint;
 		//
-		public function GradientText(defFormat:TextFormat, colorFrom:uint=0xffffff, colorTo:uint=0x444444, defText:String=null) {
+		public function GradientText(defFormat:TextFormat=null, colorFrom:uint=0xffffff, colorTo:uint=0x444444, defText:String=null) {
 			super();
 			//
 			_colorFrom=colorFrom;
 			_colorTo=colorTo;
+			//
+			if (!defFormat) defFormat=new TextFormat();
 			//
 			field = new TextField();
 			field.antiAliasType = AntiAliasType.ADVANCED;
@@ -28,14 +30,14 @@
 			if (defText) setText(defText);
 		}
 		public function set text(s:String):void {
-			field.text = s;
+			setText(s, true);
 		}
 		public function get text():String {
 			return field.text;
 		}
 		//
-		public function setText(s:String, doRefresh:Boolean=true):void {
-			text=s;
+		public function setText(s:String, doRefresh:Boolean=false):void {
+			field.text = s;
 			if (doRefresh) refresh();
 		}
 		//
@@ -67,12 +69,15 @@
 				addChild(shape);
 			}
 		}
-		public function setFormat(f:TextFormat, doRefresh:Boolean=true):void {
+		public function get format():TextFormat {
+			return field.defaultTextFormat;
+		}
+		public function set format(f:TextFormat):void {
+			setFormat(f, true);
+		}
+		public function setFormat(f:TextFormat, doRefresh:Boolean=false):void {
 			field.setTextFormat(field.defaultTextFormat=f);
 			if (doRefresh) refresh();
-		}
-		public function getFormat():TextFormat {
-			return field.defaultTextFormat;
 		}
 	}
 }

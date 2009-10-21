@@ -12,7 +12,7 @@
     </source-path>
   </compiler>
   <file-specs>
-    <path-element>C:\as3\as3-bits\GradientText\src\Main.as</path-element>
+    <path-element>C:\as3\as3-bits\GradientText\src\GradientTextDemo.as</path-element>
   </file-specs>
   <default-background-color>#282828</default-background-color>
   <default-frame-rate>30</default-frame-rate>
