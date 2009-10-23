@@ -45,8 +45,9 @@
 			var bitmapdata:BitmapData = new BitmapData(field.width, field.height, true, 0);
 			bitmapdata.draw(field);
 			//
-			if (bitmap) bitmap.bitmapData=bitmapdata;
-			else {
+			if (bitmap) {
+				bitmap.bitmapData=bitmapdata;
+			} else {
 				bitmap = new Bitmap(bitmapdata, "auto", true);
 				bitmap.cacheAsBitmap = true;
 				addChild(bitmap);
