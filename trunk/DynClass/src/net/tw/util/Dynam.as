@@ -11,7 +11,7 @@
 			//
 			for (var i:uint=0; i<props.length; i++) {
 				var prop:String=props[i];
-				var camel:String=prop.substr(0, 1).toUpperCase()+prop.substring(1).toLowerCase();
+				var camel:String=prop.substr(0, 1).toUpperCase()+prop.substring(1);
 				//
 				var _getter:Function=function ():* {
 					return getter(getKey(arguments.callee, 'g'));
