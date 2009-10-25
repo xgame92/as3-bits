@@ -18,7 +18,7 @@
 			return _tableData;
 		}
 		public static function getFromID(id:uint):BaseClient {
-			return BaseObject.getFromID(getTableData(), id) as BaseClient;
+			return BaseObject._getFromID(getTableData(), id) as BaseClient;
 		}
 		public static function getFromQuery(qs:String):Array {
 			return BaseObject.getFromQuery(getTableData(), qs);

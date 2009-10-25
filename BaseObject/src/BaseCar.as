@@ -17,7 +17,7 @@
 			return _tableData;
 		}
 		public static function getFromID(id:uint):BaseCar {
-			return BaseObject.getFromID(getTableData(), id) as BaseCar;
+			return BaseObject._getFromID(getTableData(), id) as BaseCar;
 		}
 		public static function getFromQuery(qs:String):Array {
 			return BaseObject.getFromQuery(getTableData(), qs);
