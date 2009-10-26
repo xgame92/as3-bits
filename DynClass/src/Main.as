@@ -14,13 +14,13 @@
 			// entry point
 			var dc:DynClass=new DynClass();
 			dc.setAbc('aaa');
-			trace('get!', dc.getAbc());
+			trace('get abc', dc.getAbc());
 			//
 			dc.setDef('Ouais, gros.');
-			trace(dc.getDef());
+			trace('get def', dc.getDef());
 			//
-			trace(dc.getAbc());
-			trace(dc.getGhi());
+			trace('get abc', dc.getAbc());
+			trace('get ghi', dc.getGhi());
 			//trace(dc.blabla());
 		}
 	}

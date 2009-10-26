@@ -5,9 +5,7 @@
 	public class Dynam {
 		protected static var _data:Array=[];
 		public static function ize(target:*, props:Array, getter:Function, setter:Function):void {
-			var tgData:Object={};
-			tgData.target=target;
-			tgData.funcs=[];
+			var funcs:Array=[];
 			//
 			for (var i:uint=0; i<props.length; i++) {
 				var prop:String=props[i];
@@ -20,17 +18,17 @@
 					setter(getKey(arguments.callee, 's'), o);
 				};
 				//
-				tgData.funcs[prop]={g:_getter, s:_setter};
+				funcs[prop]={g:_getter, s:_setter};
 				//
 				target['get'+camel]=_getter;
 				target['set'+camel]=_setter;
 			}
-			_data.push(tgData);
+			_data.push(funcs);
 		}
 		protected static function getKey(f:Function, type:String):String {
 			for (var i:uint=0; i<_data.length; i++) {
-				var o:Object=_data[i];
-				for (var prop:String in o.funcs) if (o.funcs[prop][type]==f) return prop;
+				var funcs:Array=_data[i];
+				for (var prop:String in funcs) if (funcs[prop][type]==f) return prop;
 			}
 			return null;
 		}
