@@ -41,7 +41,13 @@
 			return _data[key];
 		}
 		protected function setter(key:String, val:*):void {
-			if (_data[key]==val) return;
+			var curVal:*=_data[key];
+			if (curVal==val) return;
+			if (curVal is Date) {
+				var d:Date=curVal as Date;
+				var valDate:Date=dateString2date(val);
+				if (valDate.toString()==curVal.toString()) return; 
+			}
 			//trace(this, 'setter', key, val);
 			q.clearParameters();
 			q.text='UPDATE '+tableData.tableName+' SET '+key+'=@val WHERE id=@id';
@@ -49,6 +55,13 @@
 			q.parameters['@id']=id;
 			q.execute();
 			_data[key]=val;
+		}
+		public static function dateString2date(s:String):Date {
+			// 2009-01-11 16:04:05
+			var ar:Array=s.split(' ');
+			var arD:Array=ar[0].split('-');
+			var arT:Array=ar[1].split(':');
+			return new Date(arD[0], int(arD[1])-1, arD[2], arT[0], arT[1], arT[2]);
 		}
 		protected static function _getFromID(tableData:TableData, id:uint):BaseObject {
 			var tableName:String=tableData.tableName;
@@ -62,7 +75,7 @@
 			try {
 				q.execute();
 			} catch (e:Error) {
-				trace('getFromID', e);
+				trace('getFromID', tableData.asClass, e);
 				return null;
 			}
 			//
@@ -84,7 +97,7 @@
 			try {
 				q.execute();
 			} catch (e:Error) {
-				trace('getFromQuery', e);
+				trace('getFromQuery', tableData.asClass, qs, e);
 				return [];
 			}
 			//
@@ -156,6 +169,9 @@
 				o.update(data);
 			}
 			return o;
+		}
+		public function toString():String {
+			return '[BaseObject '+tableData.tableName+' '+id+']';
 		}
 	}
 }
