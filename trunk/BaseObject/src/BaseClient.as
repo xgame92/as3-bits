@@ -23,8 +23,9 @@
 		public static function getFromQuery(qs:String):Array {
 			return BaseObject.getFromQuery(getTableData(), qs);
 		}
-		public function getCars():Array {
-			return BaseCar.getFromQuery('SELECT * FROM car WHERE clientID='+id);
+		public function getCars(force:Boolean=false):Array {
+			//return BaseCar.getFromQuery('SELECT * FROM car WHERE clientID='+id);
+			return (hasCache('cars') && !force) ? getCache('cars') : setCache('cars', BaseCar.getFromQuery('SELECT * FROM car WHERE clientID='+id));
 		}
 	}
 }
