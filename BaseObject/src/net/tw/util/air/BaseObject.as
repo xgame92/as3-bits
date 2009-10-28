@@ -1,17 +1,19 @@
 ﻿package net.tw.util.air {
 	import flash.data.*;
 	import flash.events.*;
+	import net.tw.util.air.events.BaseObjectChangeEvent;
 	import net.tw.util.Dynam;
 	/**
 	 * @author Quentin T - http://toki-woki.net
 	 */
-	public class BaseObject {
+	public class BaseObject extends EventDispatcher {
 		protected static var _baseData:Array=[];
 		protected static var _q:SQLStatement;
 		public static var defaultConnection:SQLConnection;
 		//
 		protected var _id:uint;
 		protected var _data:Object={};
+		protected var _cache:Object={};
 		//
 		public function BaseObject(id:uint, tableData:TableData) {
 			_id=id;
@@ -48,13 +50,16 @@
 				var valDate:Date=dateString2date(val);
 				if (valDate.toString()==curVal.toString()) return; 
 			}
-			//trace(this, 'setter', key, val);
-			q.clearParameters();
-			q.text='UPDATE '+tableData.tableName+' SET '+key+'=@val WHERE id=@id';
-			q.parameters['@val']=val;
-			q.parameters['@id']=id;
-			q.execute();
+			execQuery('UPDATE '+tableData.tableName+' SET '+key+'=@val WHERE id=@id', {'@val':val, '@id':id});
 			_data[key]=val;
+			//
+			dispatchEvent(new BaseObjectChangeEvent(BaseObjectChangeEvent.CHANGE, key));
+		}
+		public function setField(key:String, val:*):void {
+			setter(key, val);
+		}
+		public function getField(key:String):* {
+			return getter(key);
 		}
 		public static function dateString2date(s:String):Date {
 			// 2009-01-11 16:04:05
@@ -69,18 +74,15 @@
 				_baseData[tableName]=[];
 			}
 			if (_baseData[tableName][id]) return _baseData[tableName][id];
-			q.clearParameters();
-			q.text='SELECT * FROM '+tableName+' WHERE id=@id';
-			q.parameters['@id']=id;
+			prepareQuery('SELECT * FROM '+tableName+' WHERE id=@id', {'@id':id});
 			try {
-				q.execute();
+				var res:SQLResult=execQuery();
 			} catch (e:Error) {
 				trace('getFromID', tableData.asClass, e);
 				return null;
 			}
 			//
 			var o:BaseObject=new tableData.asClass(id);
-			var res:SQLResult=q.getResult();
 			if (res.data.length!=1) return null;
 			//
 			var d:Object=res.data[0];
@@ -92,17 +94,15 @@
 			return null;
 		}
 		public static function getFromQuery(tableData:TableData, qs:String):Array {
-			q.clearParameters();
-			q.text=qs;
+			prepareQuery(qs);
 			try {
-				q.execute();
+				var res:SQLResult=execQuery();
 			} catch (e:Error) {
 				trace('getFromQuery', tableData.asClass, qs, e);
 				return [];
 			}
 			//
 			var ar:Array=[];
-			var res:SQLResult=q.getResult();
 			var data:Array=res.data;
 			if (!data) return [];
 			for (var i:uint=0; i<data.length; i++) {
@@ -114,12 +114,7 @@
 			return ar;
 		}
 		protected static function _exists(tableData:TableData, id:uint):Boolean {
-			q.clearParameters();
-			q.text='SELECT * FROM '+tableData.tableName+' WHERE id=@id';
-			q.parameters['@id']=id;
-			q.execute();
-			//trace(q.text, id);
-			var res:SQLResult=q.getResult();
+			var res:SQLResult=execQuery('SELECT * FROM '+tableData.tableName+' WHERE id=@id', {'@id':id});
 			var d:Array=res.data;
 			return d && d.length>0;
 		}
@@ -127,26 +122,29 @@
 			return false;
 		}
 		protected static function _create(tableData:TableData, data:Object):BaseObject {
-			q.clearParameters();
 			var qs:String='INSERT INTO '+tableData.tableName+' ';
+			//
 			var fields:Array=[];
 			var values:Array=[];
+			var params:Object={};
+			//
 			if (data.id) {
 				fields.push('id');
 				values.push('@id');
-				q.parameters['@id']=data.id;
+				params['@id']=data.id;
 			}
 			for (var a:String in data) {
 				if (tableData.fields.indexOf(a)==-1) continue;
 				fields.push(a);
 				values.push('@'+a);
-				q.parameters['@'+a]=data[a];
+				params['@'+a]=data[a];
 			}
+			//
 			qs+='('+fields.join(', ')+') VALUES ';
 			qs+='('+values.join(', ')+')';
-			q.text=qs;
-			//trace(q.text, q.parameters);
-			q.execute();
+			//
+			execQuery(qs, params);
+			//
 			var idq:String=data.id ? data.id : '(SELECT MAX(id) FROM '+tableData.tableName+')';
 			return getFromQuery(tableData, 'SELECT * FROM '+tableData.tableName+' WHERE id='+idq)[0];
 		}
@@ -170,7 +168,33 @@
 			}
 			return o;
 		}
-		public function toString():String {
+		//
+		protected static function prepareQuery(qs:String, params:Object=null):void {
+			q.text=qs;
+			q.clearParameters();
+			if (params) for (var a:String in params) q.parameters[a]=params[a];
+		}
+		protected static function execQuery(qs:String=null, params:Object=null):SQLResult {
+			if (qs) prepareQuery(qs, params);
+			q.execute();
+			return q.getResult();
+		}
+		//
+		protected function hasCache(key:String):Boolean {
+			return _cache.hasOwnProperty(key);
+		}
+		protected function deleteCache(key:String):Boolean {
+			return delete _cache[key];
+		}
+		protected function getCache(key:String):* {
+			return _cache[key];
+		}
+		protected function setCache(key:String, val:*):* {
+			_cache[key]=val;
+			return val;
+		}
+		//
+		override public function toString():String {
 			return '[BaseObject '+tableData.tableName+' '+id+']';
 		}
 	}
