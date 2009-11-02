@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<index>
+	<title>Source of FlexGradientText</title>
+	<nodes>
+		<node label="libs">
+		</node>
+		<node label="src">
+			<node icon="packageIcon" label="net.tw.flex.controls" expanded="true">
+				<node icon="actionScriptIcon" label="GradientLabel.as" url="source/net/tw/flex/controls/GradientLabel.as.html"/>
+			</node>
+			<node icon="mxmlAppIcon" selected="true" label="FlexGradientText.mxml" url="source/FlexGradientText.mxml.html"/>
+			<node icon="cssIcon" label="style.css" url="source/style.css.html"/>
+		</node>
+	</nodes>
+</index>
