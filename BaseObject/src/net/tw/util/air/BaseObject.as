@@ -1,23 +1,29 @@
 ﻿package net.tw.util.air {
 	import flash.data.*;
 	import flash.events.*;
-	import net.tw.util.air.events.BaseObjectChangeEvent;
+	import net.tw.util.air.events.BaseObjectEvent;
 	import net.tw.util.Dynam;
+	import mx.utils.ObjectUtil;
+	import flash.net.Responder;
+
 	/**
 	 * @author Quentin T - http://toki-woki.net
 	 */
 	public class BaseObject extends EventDispatcher {
 		protected static var _baseData:Array=[];
 		protected static var _q:SQLStatement;
+		//
 		public static var defaultConnection:SQLConnection;
 		//
 		protected var _id:uint;
 		protected var _data:Object={};
 		protected var _cache:Object={};
+		protected var _populated:Boolean=false;
 		//
 		public function BaseObject(id:uint, tableData:TableData) {
 			_id=id;
 			Dynam.ize(this, tableData.fields, getter, setter);
+			store(tableData.tableName, id, this);
 		}
 		public function get id():uint {
 			return _id;
@@ -33,8 +39,9 @@
 		/*static private function onQueryError(e:SQLEvent):void {
 			trace('SQL Error!', e.type);
 		}*/
-		protected function setData(o:Object):void {
+		protected function populate(o:Object):void {
 			_data=o;
+			_populated=true;
 		}
 		public function get tableData():TableData {
 			return new TableData();
@@ -53,7 +60,7 @@
 			execQuery('UPDATE '+tableData.tableName+' SET '+key+'=@val WHERE id=@id', {'@val':val, '@id':id});
 			_data[key]=val;
 			//
-			dispatchEvent(new BaseObjectChangeEvent(BaseObjectChangeEvent.CHANGE, key));
+			if (_populated) dispatchEvent(new BaseObjectEvent(BaseObjectEvent.CHANGE, key));
 		}
 		public function setField(key:String, val:*):void {
 			setter(key, val);
@@ -70,24 +77,21 @@
 		}
 		protected static function _getFromID(tableData:TableData, id:uint):BaseObject {
 			var tableName:String=tableData.tableName;
-			if (!_baseData[tableName]) {
-				_baseData[tableName]=[];
-			}
+			if (!_baseData[tableName]) _baseData[tableName]=[];
 			if (_baseData[tableName][id]) return _baseData[tableName][id];
 			prepareQuery('SELECT * FROM '+tableName+' WHERE id=@id', {'@id':id});
 			try {
 				var res:SQLResult=execQuery();
 			} catch (e:Error) {
-				trace('getFromID', tableData.asClass, e);
+				trace(e, 'getFromID', tableData.asClass);
 				return null;
 			}
 			//
-			var o:BaseObject=new tableData.asClass(id);
 			if (res.data.length!=1) return null;
 			//
+			var o:BaseObject=new tableData.asClass(id);
 			var d:Object=res.data[0];
-			o.setData(d);
-			_baseData[tableName][id]=o;
+			o.populate(d);
 			return o;
 		}
 		public static function getFromID(id:uint):BaseObject {
@@ -98,7 +102,7 @@
 			try {
 				var res:SQLResult=execQuery();
 			} catch (e:Error) {
-				trace('getFromQuery', tableData.asClass, qs, e);
+				trace(e, 'getFromQuery', tableData.asClass, qs);
 				return [];
 			}
 			//
@@ -107,11 +111,24 @@
 			if (!data) return [];
 			for (var i:uint=0; i<data.length; i++) {
 				var d:Object=data[i];
-				var o:BaseObject=new tableData.asClass(d.id);
-				o.setData(d);
-				ar.push(o);
+				//if (t) trace(i, ObjectUtil.toString(d));
+				//var t:Boolean=d.id==34 && tableData.tableName=='software';
+				if (isStored(tableData.tableName, d.id)) {
+					ar.push(_baseData[tableData.tableName][d.id]);
+				} else {
+					var o:BaseObject=new tableData.asClass(d.id);
+					o.populate(d);
+					ar.push(o);
+				}
 			}
 			return ar;
+		}
+		protected static function isStored(tableName:String, id:uint):Boolean {
+			return _baseData[tableName] && _baseData[tableName][id];
+		}
+		protected static function store(tableName:String, id:uint, o:BaseObject):void {
+			if (!_baseData[tableName]) _baseData[tableName]=[];
+			_baseData[tableName][id]=o;
 		}
 		protected static function _exists(tableData:TableData, id:uint):Boolean {
 			var res:SQLResult=execQuery('SELECT * FROM '+tableData.tableName+' WHERE id=@id', {'@id':id});
@@ -158,6 +175,10 @@
 				setter(a, data[a]);
 			}
 		}
+		public function dispose():void {
+			execQuery('DELETE FROM '+tableData.tableName+' WHERE id=@id', {'@id':id});
+			dispatchEvent(new BaseObjectEvent(BaseObjectEvent.DISPOSE));
+		}
 		public static function cinch(tableData:TableData, id:uint, data:Object):BaseObject {
 			var o:BaseObject;
 			if (!tableData.asClass.exists(id)) {
@@ -174,11 +195,51 @@
 			q.clearParameters();
 			if (params) for (var a:String in params) q.parameters[a]=params[a];
 		}
-		protected static function execQuery(qs:String=null, params:Object=null):SQLResult {
+		public static function execQuery(qs:String=null, params:Object=null):SQLResult {
 			if (qs) prepareQuery(qs, params);
 			q.execute();
 			return q.getResult();
 		}
+		/*protected static var _openReference:Object;
+		protected static var _asyncQS:String;
+		protected static var _asyncParams:Object;
+		protected static var _autoReconnect:Boolean;
+		protected static var _isSync:Boolean=true;
+		public static function switchToSync(b:Boolean, openReference:Object):void {
+			if (b==_isSync) return;
+			_isSync=b;
+			_openReference=openReference;
+			defaultConnection.close(new Responder(onConClose));
+		}
+		protected static function onConClose(res:*):void {
+			trace('onConClose', res);
+			defaultConnection=new SQLConnection();
+			defaultConnection.addEventListener(SQLEvent.OPEN, onSwitchOpen);
+			_isSync ? defaultConnection.open(_openReference) : defaultConnection.openAsync(_openReference);
+		}
+		protected static function onSwitchOpen(e:SQLEvent):void {
+			trace('asyncOpen', e);
+			defaultConnection.removeEventListener(SQLEvent.OPEN, onSwitchOpen);
+			var s:SQLStatement=new SQLStatement();
+			s.text=_asyncQS;
+			if (_asyncParams) for (var a:String in _asyncParams) s.parameters[a]=_asyncParams[a];
+			s.addEventListener(SQLEvent.RESULT, onAsyncRes);
+			s.execute();
+		}
+		public static function execQueryAsync(openReference:Object, qs:String, params:Object=null, autoReconnect:Boolean=true):void {
+			_openReference=openReference;
+			_asyncQS=qs;
+			_asyncParams=params;
+			_autoReconnect=autoReconnect;
+			defaultConnection.close(new Responder(onConClose));
+		}
+		protected static function onAsyncRes(e:SQLEvent):void {
+			trace('asyncRes', e);
+			if (_autoReconnect) {
+				defaultConnection.close();
+				defaultConnection.open(_openReference);
+			}
+		}*/
 		//
 		protected function hasCache(key:String):Boolean {
 			return _cache.hasOwnProperty(key);
