@@ -1,0 +1,10 @@
+/* CSS file */
+Label {
+	fontFamily: Georgia;
+}
+@font-face {
+	fontFamily: Georgia;
+	fontWeight: normal;
+	fontStyle: normal;
+	src: local("Georgia");
+}
