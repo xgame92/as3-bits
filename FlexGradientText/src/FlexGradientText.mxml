@@ -7,10 +7,10 @@
 	<mx:Style source="style.css"/>
 	<mx:HBox width="100%">
 		<mx:TextInput id="ti" text="GradientLabel!" width="100%"/>
-		<mx:HSlider id="sl" value="50" minimum="10" maximum="124" liveDragging="true" width="100%"/>
-		<mx:HSlider width="100" liveDragging="true" minimum="0" maximum="360" id="slAngle" value="90"/>
-		<mx:ColorPicker id="cpFrom" selectedColor="0xe6e6e6"/>
-		<mx:ColorPicker id="cpTo" selectedColor="0x666666"/>
+		<mx:HSlider id="sl" value="50" minimum="10" maximum="124" liveDragging="true" width="100%" toolTip="Font Size"/>
+		<mx:HSlider width="100" liveDragging="true" minimum="0" maximum="360" id="slAngle" value="90" toolTip="Gradient Angle"/>
+		<mx:ColorPicker id="cpFrom" selectedColor="0xe6e6e6" toolTip="Gradient From"/>
+		<mx:ColorPicker id="cpTo" selectedColor="0x666666" toolTip="Gradient To"/>
 	</mx:HBox>
 	<twc:GradientLabel id="lbl2" text="{ti.text}" colorFrom="{cpFrom.selectedColor}" colorTo="{cpTo.selectedColor}" fontSize="{sl.value}" angle="{slAngle.value}">
 		<twc:filters>
