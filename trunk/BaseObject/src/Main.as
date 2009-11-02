@@ -7,7 +7,7 @@
 	import flash.filesystem.FileMode;
 	import flash.filesystem.FileStream;
 	import net.tw.util.air.BaseObject;
-	import net.tw.util.air.events.BaseObjectChangeEvent;
+	import net.tw.util.air.events.BaseObjectEvent;
 	/**
 	 * @author Quentin T - http://toki-woki.net
 	 */
@@ -21,7 +21,7 @@
 			var c2:BaseClient=BaseClient.getFromID(1);
 			trace(c2.id, c2.getName());
 			var c3:BaseClient=BaseClient.getFromID(2);
-			c3.addEventListener(BaseObjectChangeEvent.CHANGE, onChange);
+			c3.addEventListener(BaseObjectEvent.CHANGE, onChange);
 			trace(c3.id);
 			//
 			c3.setName('Yeah!');
@@ -55,7 +55,7 @@
 			var d:Date=new Date();
 			trace('Time', d.seconds, d.milliseconds);
 		}
-		private function onChange(e:BaseObjectChangeEvent):void {
+		private function onChange(e:BaseObjectEvent):void {
 			trace(e, e.changedField, e.target.getField(e.changedField));
 		}
 	}
