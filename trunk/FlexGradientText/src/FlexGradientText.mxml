@@ -3,7 +3,7 @@
 				xmlns:local="*" backgroundColor="#FFFFFF" themeColor="#000000"
 				backgroundGradientAlphas="[1.0, 1.0]" backgroundGradientColors="[#2F303E, #2F303E]"
 				xmlns:twc="net.tw.flex.controls.*"
-				width="560" height="240" viewSourceURL="srcview/index.html">
+				width="560" height="240">
 	<mx:Style source="style.css"/>
 	<mx:HBox width="100%">
 		<mx:TextInput id="ti" text="GradientLabel!" width="100%"/>
