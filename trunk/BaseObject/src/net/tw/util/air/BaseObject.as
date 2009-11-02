@@ -197,6 +197,7 @@
 		}
 		public static function execQuery(qs:String=null, params:Object=null):SQLResult {
 			if (qs) prepareQuery(qs, params);
+			//trace(q.text);
 			q.execute();
 			return q.getResult();
 		}
