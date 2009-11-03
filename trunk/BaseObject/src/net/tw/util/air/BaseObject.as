@@ -50,17 +50,21 @@
 			return _data[key];
 		}
 		protected function setter(key:String, val:*):void {
-			var curVal:*=_data[key];
-			if (curVal==val) return;
-			if (curVal is Date) {
-				var d:Date=curVal as Date;
-				var valDate:Date=dateString2date(val);
-				if (valDate.toString()==curVal.toString()) return; 
-			}
+			if (!valIsDifferent(key, val)) return;
 			execQuery('UPDATE '+tableData.tableName+' SET '+key+'=@val WHERE id=@id', {'@val':val, '@id':id});
 			_data[key]=val;
 			//
 			if (_populated) dispatchEvent(new BaseObjectEvent(BaseObjectEvent.CHANGE, key));
+		}
+		protected function valIsDifferent(key:String, val:*):Boolean {
+			var curVal:*=_data[key];
+			if (curVal==val) return false;
+			if (curVal is Date) {
+				var d:Date=curVal as Date;
+				var valDate:Date=dateString2date(val);
+				if (valDate.toString()==curVal.toString()) return false; 
+			}
+			return true;
 		}
 		public function setField(key:String, val:*):void {
 			setter(key, val);
@@ -111,8 +115,6 @@
 			if (!data) return [];
 			for (var i:uint=0; i<data.length; i++) {
 				var d:Object=data[i];
-				//if (t) trace(i, ObjectUtil.toString(d));
-				//var t:Boolean=d.id==34 && tableData.tableName=='software';
 				if (isStored(tableData.tableName, d.id)) {
 					ar.push(_baseData[tableData.tableName][d.id]);
 				} else {
@@ -169,11 +171,28 @@
 			return null;
 		}
 		public function update(data:Object):void {
+			var qs:String='UPDATE '+tableData.tableName+' SET ';
+			var params:Object={};
+			var fields:Array=[];
+			//
 			for (var a:String in data) {
 				if (tableData.fields.indexOf(a)==-1) continue;
 				if (a=='id') continue;
-				setter(a, data[a]);
+				if (!valIsDifferent(a, data[a])) continue;
+				//
+				params['@'+a]=data[a];
+				if (fields.length>0) qs+=', ';
+				qs+=a+'=@'+a;
+				fields.push(a);
+				//
+				_data[a]=data[a];
 			}
+			if (fields.length==0) return;
+			//
+			qs+=' WHERE id=@id;';
+			params['@id']=id;
+			execQuery(qs, params);
+			for (var i:uint=0; i<fields.length; i++) dispatchEvent(new BaseObjectEvent(BaseObjectEvent.CHANGE, fields[i]));
 		}
 		public function dispose():void {
 			execQuery('DELETE FROM '+tableData.tableName+' WHERE id=@id', {'@id':id});
@@ -197,50 +216,9 @@
 		}
 		public static function execQuery(qs:String=null, params:Object=null):SQLResult {
 			if (qs) prepareQuery(qs, params);
-			//trace(q.text);
 			q.execute();
 			return q.getResult();
 		}
-		/*protected static var _openReference:Object;
-		protected static var _asyncQS:String;
-		protected static var _asyncParams:Object;
-		protected static var _autoReconnect:Boolean;
-		protected static var _isSync:Boolean=true;
-		public static function switchToSync(b:Boolean, openReference:Object):void {
-			if (b==_isSync) return;
-			_isSync=b;
-			_openReference=openReference;
-			defaultConnection.close(new Responder(onConClose));
-		}
-		protected static function onConClose(res:*):void {
-			trace('onConClose', res);
-			defaultConnection=new SQLConnection();
-			defaultConnection.addEventListener(SQLEvent.OPEN, onSwitchOpen);
-			_isSync ? defaultConnection.open(_openReference) : defaultConnection.openAsync(_openReference);
-		}
-		protected static function onSwitchOpen(e:SQLEvent):void {
-			trace('asyncOpen', e);
-			defaultConnection.removeEventListener(SQLEvent.OPEN, onSwitchOpen);
-			var s:SQLStatement=new SQLStatement();
-			s.text=_asyncQS;
-			if (_asyncParams) for (var a:String in _asyncParams) s.parameters[a]=_asyncParams[a];
-			s.addEventListener(SQLEvent.RESULT, onAsyncRes);
-			s.execute();
-		}
-		public static function execQueryAsync(openReference:Object, qs:String, params:Object=null, autoReconnect:Boolean=true):void {
-			_openReference=openReference;
-			_asyncQS=qs;
-			_asyncParams=params;
-			_autoReconnect=autoReconnect;
-			defaultConnection.close(new Responder(onConClose));
-		}
-		protected static function onAsyncRes(e:SQLEvent):void {
-			trace('asyncRes', e);
-			if (_autoReconnect) {
-				defaultConnection.close();
-				defaultConnection.open(_openReference);
-			}
-		}*/
 		//
 		protected function hasCache(key:String):Boolean {
 			return _cache.hasOwnProperty(key);

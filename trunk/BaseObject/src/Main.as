@@ -17,12 +17,13 @@
 			sqlCon.open(File.applicationDirectory.resolvePath('data.sqlite'));
 			BaseObject.defaultConnection=sqlCon;
 			var c1:BaseClient=BaseClient.getFromID(1) as BaseClient;
-			trace(c1.id);
+			//trace(c1.id);
 			var c2:BaseClient=BaseClient.getFromID(1);
-			trace(c2.id, c2.getName());
+			//trace(c2.id, c2.getName());
 			var c3:BaseClient=BaseClient.getFromID(2);
 			c3.addEventListener(BaseObjectEvent.CHANGE, onChange);
-			trace(c3.id);
+			c3.update({name:'aabc', url:'test.com'});
+			/*trace(c3.id);
 			//
 			c3.setName('Yeah!');
 			trace(c3.getName());
@@ -49,7 +50,7 @@
 			trace(c3.getCars().length);
 			traceTime();
 			trace(c3.getCars().length);
-			traceTime();
+			traceTime();*/
 		}
 		protected function traceTime():void {
 			var d:Date=new Date();
