@@ -1,4 +1,4 @@
-﻿package  {
+﻿package {
 	import net.tw.util.air.BaseObject;
 	import net.tw.util.air.TableData;
 	/**
