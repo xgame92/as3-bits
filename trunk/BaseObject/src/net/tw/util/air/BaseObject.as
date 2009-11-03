@@ -101,8 +101,8 @@
 		public static function getFromID(id:uint):BaseObject {
 			return null;
 		}
-		public static function getFromQuery(tableData:TableData, qs:String):Array {
-			prepareQuery(qs);
+		public static function getFromQuery(tableData:TableData, qs:String, params:Object=null):Array {
+			prepareQuery(qs, params);
 			try {
 				var res:SQLResult=execQuery();
 			} catch (e:Error) {
