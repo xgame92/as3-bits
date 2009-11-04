@@ -3,9 +3,6 @@
 	import flash.events.*;
 	import net.tw.util.air.events.BaseObjectEvent;
 	import net.tw.util.Dynam;
-	import mx.utils.ObjectUtil;
-	import flash.net.Responder;
-
 	/**
 	 * @author Quentin T - http://toki-woki.net
 	 */
@@ -62,7 +59,7 @@
 			if (curVal is Date) {
 				var d:Date=curVal as Date;
 				var valDate:Date=dateString2date(val);
-				if (valDate.toString()==curVal.toString()) return false; 
+				return valDate.toString()!=curVal.toString();
 			}
 			return true;
 		}
@@ -101,7 +98,7 @@
 		public static function getFromID(id:uint):BaseObject {
 			return null;
 		}
-		public static function getFromQuery(tableData:TableData, qs:String, params:Object=null):Array {
+		protected static function _getFromQuery(tableData:TableData, qs:String, params:Object=null):Array {
 			prepareQuery(qs, params);
 			try {
 				var res:SQLResult=execQuery();
@@ -124,6 +121,9 @@
 				}
 			}
 			return ar;
+		}
+		public static function getFromQuery(tableData:TableData, qs:String, params:Object=null):Array {
+			return [];
 		}
 		protected static function isStored(tableName:String, id:uint):Boolean {
 			return _baseData[tableName] && _baseData[tableName][id];
@@ -165,7 +165,7 @@
 			execQuery(qs, params);
 			//
 			var idq:String=data.id ? data.id : '(SELECT MAX(id) FROM '+tableData.tableName+')';
-			return getFromQuery(tableData, 'SELECT * FROM '+tableData.tableName+' WHERE id='+idq)[0];
+			return _getFromQuery(tableData, 'SELECT * FROM '+tableData.tableName+' WHERE id='+idq)[0];
 		}
 		public static function create(data:Object):BaseObject {
 			return null;

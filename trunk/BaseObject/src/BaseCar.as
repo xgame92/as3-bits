@@ -20,7 +20,7 @@
 			return BaseObject._getFromID(getTableData(), id) as BaseCar;
 		}
 		public static function getFromQuery(qs:String):Array {
-			return BaseObject.getFromQuery(getTableData(), qs);
+			return BaseObject._getFromQuery(getTableData(), qs);
 		}
 		//
 		public function getClient():BaseClient {
