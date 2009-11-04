@@ -21,7 +21,7 @@
 			return BaseObject._getFromID(getTableData(), id) as BaseClient;
 		}
 		public static function getFromQuery(qs:String):Array {
-			return BaseObject.getFromQuery(getTableData(), qs);
+			return BaseObject._getFromQuery(getTableData(), qs);
 		}
 		public function getCars(force:Boolean=false):Array {
 			//return BaseCar.getFromQuery('SELECT * FROM car WHERE clientID='+id);

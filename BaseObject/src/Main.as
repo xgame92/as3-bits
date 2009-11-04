@@ -23,7 +23,7 @@
 			var c3:BaseClient=BaseClient.getFromID(2);
 			c3.addEventListener(BaseObjectEvent.CHANGE, onChange);
 			c3.update({name:'aabc', url:'test.com'});
-			/*trace(c3.id);
+			trace(c3.id);
 			//
 			c3.setName('Yeah!');
 			trace(c3.getName());
@@ -50,7 +50,7 @@
 			trace(c3.getCars().length);
 			traceTime();
 			trace(c3.getCars().length);
-			traceTime();*/
+			traceTime();
 		}
 		protected function traceTime():void {
 			var d:Date=new Date();

@@ -1,6 +1,8 @@
 ﻿package {
 	import flash.display.Sprite;
 	import flash.events.Event;
+	import flash.events.EventDispatcher;
+	import net.tw.util.Dynam;
 	/**
 	 * @author Quentin T - http://toki-woki.net
 	 */
@@ -21,7 +23,12 @@
 			//
 			trace('get abc', dc.getAbc());
 			trace('get ghi', dc.getGhi());
-			//trace(dc.blabla());
+		}
+		protected function getter(key:String):void {
+			trace('get', key);
+		}
+		protected function setter(key:String, val:*):void {
+			trace('set', key, val);
 		}
 	}
 }
