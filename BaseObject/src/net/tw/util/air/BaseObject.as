@@ -198,7 +198,7 @@
 			execQuery('DELETE FROM '+tableData.tableName+' WHERE id=@id', {'@id':id});
 			dispatchEvent(new BaseObjectEvent(BaseObjectEvent.DISPOSE));
 		}
-		public static function cinch(tableData:TableData, id:uint, data:Object):BaseObject {
+		protected static function _cinch(tableData:TableData, id:uint, data:Object):BaseObject {
 			var o:BaseObject;
 			if (!tableData.asClass.exists(id)) {
 				o=tableData.asClass.create(data);
@@ -207,6 +207,9 @@
 				o.update(data);
 			}
 			return o;
+		}
+		public static function cinch(tableData:TableData, id:uint, data:Object):BaseObject {
+			return null;
 		}
 		//
 		protected static function prepareQuery(qs:String, params:Object=null):void {
