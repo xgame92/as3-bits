@@ -13,22 +13,37 @@
 		protected var _destination:File;
 		protected var _fs:FileStream;
 		protected var _stream:URLStream;
-		protected var _ba:ByteArray;
+		//protected var _ba:ByteArray;
 		//
-		public function DownloadHelper(url:URLRequest, destination:File) {
-			_url=url;
-			_destination=destination;
+		public function DownloadHelper(u:URLRequest=null, dest:File=null) {
+			url=u;
+			destination=dest;
 			_fs=new FileStream();
 			_stream=new URLStream();
 		}
+		public function set url(u:URLRequest):void {
+			_url=u;
+		}
+		public function get url():URLRequest {
+			return _url;
+		}
+		public function set destination(dest:File):void {
+			_destination=dest;
+		}
+		public function get destination():File {
+			return _destination;
+		}
+		public function get stream():URLStream {
+			return _stream;
+		}
+		//
 		public function start():void {
 			_stream.addEventListener(ProgressEvent.PROGRESS, onProgress);
 			_stream.addEventListener(Event.COMPLETE, onComplete);
-			if (_destination.exists) _destination.deleteFile();
-			_fs.open(_destination, FileMode.APPEND);
+			if (destination.exists) destination.deleteFile();
+			_fs.open(destination, FileMode.APPEND);
 			_offset=0;
-			_ba=new ByteArray();
-			_stream.load(_url);
+			_stream.load(url);
 		}
 		protected function stop():void {
 			_fs.close();
@@ -38,26 +53,18 @@
 		}
 		public function cancel():void {
 			stop();
-			_destination.deleteFileAsync();
+			destination.deleteFileAsync();
 		}
 		protected var _offset:uint;
 		protected function onProgress(e:ProgressEvent):void {
-			_stream.readBytes(_ba, _offset, e.bytesLoaded-_offset);
-			_fs.writeBytes(_ba, _offset, _ba.length-_offset);
+			var ba:ByteArray=new ByteArray();
+			_stream.readBytes(ba, _offset, e.bytesLoaded-_offset);
+			_fs.writeBytes(ba, _offset, e.bytesLoaded-_offset);
 			_offset=e.bytesLoaded;
 		}
 		protected function onComplete(e:Event):void {
 			trace(e);
 			stop();
-		}
-		public function get stream():URLStream {
-			return _stream;
-		}
-		public function get destination():File {
-			return _destination;
-		}
-		public function get url():URLRequest {
-			return _url;
 		}
 	}
 }
