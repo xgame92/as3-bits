@@ -1,0 +1,23 @@
+#summary Projects and Utilities available in this repository
+
+= Introduction =
+
+You will find in this page a list of the projects available here. I'll try to keep this up-to-date.
+
+= Details =
+
+==GradientLabel==
+Flex/AS3 class that extends Label and adds the ability to apply a gradient on the text.
+[http://code.google.com/p/as3-bits/source/browse/trunk/FlexGradientText/src/net/tw/flex/controls/GradientLabel.as Class] - [http://code.google.com/p/as3-bits/source/browse/trunk/FlexGradientText/ Demo project]
+
+==Dynam.ize==
+AS3 Utility class to dynamize any instance of any class, by providing a getter and a setter.
+[http://code.google.com/p/as3-bits/source/browse/trunk/DynClass/src/net/tw/util/Dynam.as Class] - [http://code.google.com/p/as3-bits/source/browse/trunk/DynClass/ Demo project] - [http://toki-woki.net/blog/p1298-dynam-ize Blog post]
+
+==DownloadHelper==
+AIR/AS3 Utility class to (stream) download a remote file to a local path.
+[http://code.google.com/p/as3-bits/source/browse/trunk/DownloadHelper/src/net/tw/util/air/DownloadHelper.as Class] - [http://code.google.com/p/as3-bits/source/browse/trunk/DownloadHelper/ Demo project]
+
+==BaseObject==
+AIR/AS3 Class to ease working with synchronous SQLite connections.
+[http://code.google.com/p/as3-bits/source/browse/trunk/BaseObject/src/net/tw/util/air/BaseObject.as Class] - [http://code.google.com/p/as3-bits/source/browse/trunk/BaseObject/ Demo project]
