@@ -8,7 +8,7 @@
 	 */
 	public class Main extends Sprite {
 		public function Main():void {
-			var dh:DownloadHelper=new DownloadHelper(new URLRequest('http://toki-woki.net/stock/Buck65-B.Sc.mp3?yo'), File.desktopDirectory.resolvePath('track.mp3'));
+			var dh:DownloadHelper=new DownloadHelper(new URLRequest('http://toki-woki.net/stock/Buck65-B.Sc.mp3'), File.desktopDirectory.resolvePath('track.mp3'));
 			dh.start();
 		}
 	}

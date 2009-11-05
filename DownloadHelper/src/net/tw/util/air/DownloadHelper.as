@@ -24,10 +24,13 @@
 		public function start():void {
 			_stream.addEventListener(ProgressEvent.PROGRESS, onProgress);
 			_stream.addEventListener(Event.COMPLETE, onComplete);
-			_fs.open(_destination, FileMode.WRITE);
+			if (_destination.exists) _destination.deleteFile();
+			_fs.open(_destination, FileMode.APPEND);
+			_offset=0;
+			_ba=new ByteArray();
 			_stream.load(_url);
 		}
-		protected function stop() {
+		protected function stop():void {
 			_fs.close();
 			_stream.close();
 			_stream.removeEventListener(ProgressEvent.PROGRESS, onProgress);
@@ -37,12 +40,14 @@
 			stop();
 			_destination.deleteFileAsync();
 		}
+		protected var _offset:uint;
 		protected function onProgress(e:ProgressEvent):void {
-			_ba=new ByteArray();
-			_stream.readBytes(_ba, 0, _stream.bytesAvailable);
-			_fs.writeBytes(_ba, 0, _ba.length);
+			_stream.readBytes(_ba, _offset, e.bytesLoaded-_offset);
+			_fs.writeBytes(_ba, _offset, _ba.length-_offset);
+			_offset=e.bytesLoaded;
 		}
 		protected function onComplete(e:Event):void {
+			trace(e);
 			stop();
 		}
 		public function get stream():URLStream {
