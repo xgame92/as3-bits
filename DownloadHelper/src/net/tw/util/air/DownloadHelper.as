@@ -13,7 +13,7 @@
 		protected var _destination:File;
 		protected var _fs:FileStream;
 		protected var _stream:URLStream;
-		//protected var _ba:ByteArray;
+		protected var _ba:ByteArray;
 		//
 		public function DownloadHelper(u:URLRequest=null, dest:File=null) {
 			url=u;
@@ -43,27 +43,28 @@
 			if (destination.exists) destination.deleteFile();
 			_fs.open(destination, FileMode.APPEND);
 			_offset=0;
+			_ba=new ByteArray();
 			_stream.load(url);
 		}
 		protected function stop():void {
+			_ba.clear();
 			_fs.close();
 			_stream.close();
 			_stream.removeEventListener(ProgressEvent.PROGRESS, onProgress);
 			_stream.removeEventListener(Event.COMPLETE, onComplete);
 		}
 		public function cancel():void {
+			if (!_stream.connected) return;
 			stop();
-			destination.deleteFileAsync();
+			if (destination.exists) destination.deleteFileAsync();
 		}
 		protected var _offset:uint;
 		protected function onProgress(e:ProgressEvent):void {
-			var ba:ByteArray=new ByteArray();
-			_stream.readBytes(ba, _offset, e.bytesLoaded-_offset);
-			_fs.writeBytes(ba, _offset, e.bytesLoaded-_offset);
+			_stream.readBytes(_ba, _offset, e.bytesLoaded-_offset);
+			_fs.writeBytes(_ba, _offset, _ba.length-_offset);
 			_offset=e.bytesLoaded;
 		}
 		protected function onComplete(e:Event):void {
-			trace(e);
 			stop();
 		}
 	}
