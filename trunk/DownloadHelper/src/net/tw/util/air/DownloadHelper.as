@@ -53,10 +53,10 @@
 			var ba:ByteArray=new ByteArray();
 			_stream.readBytes(ba, 0, _stream.bytesAvailable);
 			fs.writeBytes(ba, 0, ba.length);
-			fs.close();
-			//
-			stop();
 			ba.clear();
+			//
+			fs.close();
+			stop();
 		}
 	}
 }
