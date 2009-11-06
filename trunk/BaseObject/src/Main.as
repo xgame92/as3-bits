@@ -16,45 +16,34 @@
 			var sqlCon:SQLConnection=new SQLConnection();
 			sqlCon.open(File.applicationDirectory.resolvePath('data.sqlite'));
 			BaseObject.defaultConnection=sqlCon;
-			var c1:BaseClient=BaseClient.getFromID(1) as BaseClient;
-			//trace(c1.id);
-			var c2:BaseClient=BaseClient.getFromID(1);
-			//trace(c2.id, c2.getName());
-			var c3:BaseClient=BaseClient.getFromID(2);
-			c3.addEventListener(BaseObjectEvent.CHANGE, onChange);
-			c3.update({name:'aabc', url:'test.com'});
-			trace(c3.id);
 			//
-			c3.setName('Yeah!');
+			var myClient:Client=Client.create({name:'Joe', url:'http://www.yep.com', male:true});
+			myClient.setName('Mark');
+			myClient.update({name:'Jack', url:'http://www.yo.net'});
+			trace(myClient.getUrl(), myClient.getName());
+			//
+			var males:Array=Client.getFromQuery('SELECT * FROM client WHERE male=@male', {'@male':true});
+			trace(males.length);
+			//
+			/*var c1:Client=Client.getFromID(1);
+			var c2:Client=Client.getFromID(1);
+			var c3:Client=Client.getFromID(2);
+			//
+			c3.addEventListener(BaseObjectEvent.CHANGE, onChange);
+			c3.update({name:'Paul', url:'http://test.com'});
+			//
+			c3.setName('John');
 			trace(c3.getName());
 			//
-			var car1:BaseCar=BaseCar.getFromID(1);
+			var car1:Car=Car.getFromID(1);
 			trace(car1.getSpeed());
-			//car1.setSpeed(60);
 			//
-			traceTime();
 			var cars:Array=c3.getCars();
-			traceTime();
 			trace(cars.length);
-			cars[0].setPurchaseDate(new Date());
-			cars[0].getClient().setMale(true);
 			for (var i:uint=0; i<cars.length; i++) {
-				var car:BaseCar=cars[i] as BaseCar;
+				var car:Car=cars[i] as Car;
 				trace(' - ', car.id, car.getSpeed(), car.getBrand(), car.getPurchaseDate().fullYear, car.getClient().getMale());
-			}
-			traceTime();
-			trace(c3.getCars().length);
-			traceTime();
-			trace(c3.getCars().length);
-			traceTime();
-			trace(c3.getCars().length);
-			traceTime();
-			trace(c3.getCars().length);
-			traceTime();
-		}
-		protected function traceTime():void {
-			var d:Date=new Date();
-			trace('Time', d.seconds, d.milliseconds);
+			}*/
 		}
 		private function onChange(e:BaseObjectEvent):void {
 			trace(e, e.changedField, e.target.getField(e.changedField));
