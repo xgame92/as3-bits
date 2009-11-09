@@ -17,6 +17,7 @@
 			url=u;
 			destination=dest;
 			_stream=new URLStream();
+			_stream.addEventListener(Event.COMPLETE, onComplete);
 		}
 		public function set url(u:URLRequest):void {
 			_url=u;
@@ -35,12 +36,11 @@
 		}
 		//
 		public function start():void {
-			_stream.addEventListener(Event.COMPLETE, onComplete);
 			_stream.load(url);
 		}
 		protected function stop():void {
 			_stream.close();
-			_stream.removeEventListener(Event.COMPLETE, onComplete);
+			//_stream.removeEventListener(Event.COMPLETE, onComplete);
 		}
 		public function cancel():void {
 			if (!_stream.connected) return;
