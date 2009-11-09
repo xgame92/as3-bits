@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" minWidth="1024" minHeight="768" click="switchState(event)">
+	<mx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			protected function switchState(event:MouseEvent):void {
+				currentState=currentState=='stateTwo' ? null : 'stateTwo';
+			}
+			protected function onEnterState(e:FlexEvent):void {
+				trace(e);
+			}
+		]]>
+	</mx:Script>
+	
+	<mx:states>
+		<mx:State name="stateTwo" enterState="onEnterState(event)">
+			<mx:SetProperty target="{viewstack1}" name="selectedIndex" value="1"/>
+		</mx:State>
+	</mx:states>
+	
+	<mx:Fade id="fadeOut" alphaFrom="1" alphaTo="0" duration="750" />
+	<mx:Fade id="fadeIn" alphaFrom="0" alphaTo="1" duration="150" />
+	
+	<mx:ViewStack id="viewstack1" left="10" right="10" top="10" bottom="10">
+		<mx:Canvas label="View 1" width="100%" height="100%" hideEffect="{fadeOut}" showEffect="{fadeIn}">
+			<mx:Canvas x="82" y="95" width="509" height="234" backgroundColor="#FFB3B3"></mx:Canvas>
+		</mx:Canvas>
+		<mx:Canvas label="View 2" width="100%" height="100%" showEffect="{fadeIn}" hideEffect="{fadeOut}">
+			<mx:Canvas x="234" y="302" width="509" height="234" backgroundColor="#FAFFAD"></mx:Canvas>
+		</mx:Canvas>
+	</mx:ViewStack>
+</mx:Application>
