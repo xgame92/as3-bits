@@ -4,6 +4,8 @@ package net.tw.flex.controls {
 	import flash.events.Event;
 	import flash.display.CapsStyle;
 	import flash.display.JointStyle;
+	import mx.styles.CSSStyleDeclaration;
+	import mx.styles.StyleManager;
 
 	/**
 	 * @see http://www.flexer.info/2008/06/12/continuing-image-with-border/
@@ -17,11 +19,27 @@ package net.tw.flex.controls {
 			super();
 			smoothBitmapContent=true;
 		}
+		//
+		// http://livedocs.adobe.com/flex/3/html/skinstyle_3.html#184113
+		private static var classConstructed:Boolean = classConstruct();
+		private static function classConstruct():Boolean {
+			if (!StyleManager.getStyleDeclaration("RichImage")) {
+				var defStyles:CSSStyleDeclaration = new CSSStyleDeclaration();
+				defStyles.defaultFactory = function():void {
+					this.borderThickness = 0;
+					this.borderColor = '#ff0000';
+					this.borderAlpha = 1;
+				}
+				StyleManager.setStyleDeclaration("RichImage", defStyles, true);
+			}
+			return true;
+		}
+		//
 		override protected function updateDisplayList(w:Number, h:Number):void {
 			try {super.updateDisplayList(w,h);} catch (e:Error) {}
 			//
 			graphics.clear();
-			if (getStyle('borderThickness')==0) return;
+			if (getStyle('borderThickness')==0 || !contentWidth || !contentHeight) return;
 			var thickness:Number = getStyle('borderThickness');
 			graphics.lineStyle(thickness, getStyle('borderColor'), getStyle('borderAlpha'), false, "normal", null, JointStyle.MITER);
 			var startX:Number;
