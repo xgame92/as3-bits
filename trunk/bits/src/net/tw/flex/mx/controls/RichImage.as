@@ -1,4 +1,4 @@
-package net.tw.mx.controls {
+package net.tw.flex.mx.controls {
 	import mx.controls.Image;
 	import flash.display.Bitmap;
 	import flash.events.Event;

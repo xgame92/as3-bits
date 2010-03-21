@@ -1,4 +1,4 @@
-package net.tw.util.gumbo {
+package net.tw.flex.spark.util {
 	import flash.events.*;
 	import flash.utils.Dictionary;
 	import mx.events.FlexEvent;
