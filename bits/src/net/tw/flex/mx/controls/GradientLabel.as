@@ -1,4 +1,4 @@
-package net.tw.mx.controls {
+package net.tw.flex.mx.controls {
 	import mx.controls.Label;
 	import flash.display.DisplayObject;
 	import flash.display.Shape;
