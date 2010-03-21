@@ -1,4 +1,4 @@
-package net.tw.flex.spark.util {
+package net.tw.flex.spark.managers {
 	import flash.events.*;
 	import flash.utils.Dictionary;
 	import mx.events.FlexEvent;
