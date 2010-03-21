@@ -2,7 +2,7 @@
 <flexLibProperties includeAllClasses="true" version="3">
   <includeClasses>
     <classEntry path="net.tw.util.SO"/>
-    <classEntry path="net.tw.flex.spark.util.PopUpFocusManager"/>
+    <classEntry path="net.tw.flex.spark.managers.PopUpFocusManager"/>
     <classEntry path="net.tw.util.DisplayObjectUtil"/>
   </includeClasses>
   <includeResources/>
