@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   xmlns:controls="net.tw.flex.spark.controls.*"
+			   width="800" height="300">
+	<s:layout>
+		<s:VerticalLayout horizontalAlign="center" verticalAlign="middle" gap="20"/>
+	</s:layout>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<s:HGroup>
+		<s:Label text="Total pages" width="100"/>
+		<s:HSlider id="pageCounter" minimum="0" maximum="100"  value="10"/>
+	</s:HGroup>
+	<s:HGroup>
+		<s:Label text="Current page" width="100"/>
+		<s:HSlider id="pagePos" minimum="1" maximum="{pageCounter.value}" />
+	</s:HGroup>
+	<controls:Pager id="pager" totalPages="{pageCounter.value}" currentPage="{pagePos.value}" />
+	<s:Button label="Randomize values">
+		<s:click><![CDATA[
+			//pager.totalPages=
+			//pager.currentPage=uint(Math.random()*pager.totalPages);	
+			pageCounter.value=uint(Math.random()*100);
+			pagePos.value=uint(Math.random()*pager.totalPages);
+		]]></s:click>
+	</s:Button>
+</s:Application>
