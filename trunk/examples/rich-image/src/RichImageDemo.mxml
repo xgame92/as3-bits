@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" backgroundColor="#3C3C3C" backgroundGradientColors="" xmlns:controls="net.tw.flex.mx.controls.*" width="800" height="600">
+	<mx:Style>
+		HRule, VRule {
+			strokeColor: #ff0000;
+			strokeWidth: 1;
+		}
+	</mx:Style>
+	<mx:Script>
+		<![CDATA[
+			protected function toggleWidth():void {
+				toggler.width=toggler.width==100 ? 276 : 100;
+			}
+		]]>
+	</mx:Script>
+	<controls:RichImage x="261" y="165" source="http://www.google.com/intl/en_ALL/images/logo.gif" borderColor="#1f7fd0" borderThickness="4"/>
+	<mx:VRule x="261" y="69" height="150"/>
+	<mx:HRule x="189" y="165" width="300"/>
+	<mx:HBox y="309" left="10" right="10">
+		<controls:RichImage source="http://upload.wikimedia.org/wikipedia/commons/4/47/PNG_transparency_demonstration_1.png" borderColor="#528d3b" borderThickness="10" width="276" height="200"
+							click="toggleWidth()" id="toggler"/>
+		<controls:RichImage source="http://www.google.com/intl/en_ALL/images/logo.gif" borderColor="#ff0000" borderThickness="1"/>
+	</mx:HBox>
+</mx:Application>
