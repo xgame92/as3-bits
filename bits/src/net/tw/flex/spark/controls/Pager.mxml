@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:HGroup xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		  xmlns:s="library://ns.adobe.com/flex/spark" 
+		  xmlns:mx="library://ns.adobe.com/flex/mx"
+		  verticalAlign="middle"
+		  gap="-1">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import spark.components.Button;
+			import spark.components.Label;
+			//
+			protected var _totalPages:uint;
+			protected var _currentPage:uint;
+			protected var btns:Array;
+			//
+			public function set totalPages(c:uint):void {
+				_totalPages=c;
+				invalidateProperties();
+			}
+			public function get totalPages():uint {
+				return _totalPages;
+			}
+			public function set currentPage(p:uint):void {
+				_currentPage=p;
+				invalidateProperties();
+			}
+			public function get currentPage():uint {
+				return _currentPage;
+			}
+			override protected function commitProperties():void {
+				super.commitProperties();
+				//
+				btns=[];
+				removeAllElements();
+				if (totalPages==0) return;
+				// Page précédente
+				if (totalPages>1 && currentPage>1) addBtn('«');
+				// Les premiers boutons
+				addBtns(1, 2);
+				// Sep
+				if (currentPage>4) addEllipsis();
+				// Les boutons du milieu
+				addBtns(currentPage-1, currentPage+1);
+				// Sep
+				if (currentPage<totalPages-3) addEllipsis();
+				// Les boutons de la fin
+				addBtns(totalPages-1, totalPages);
+				// Page suivante
+				if (totalPages>1 && currentPage<totalPages) addBtn('»');
+			}
+			protected function addBtn(l:*):void {
+				var b:Button=new Button();
+				b.label=String(l);
+				if (l==currentPage) b.enabled=false;
+				addElement(b);
+				if (l is uint) btns[l]=b;
+			}
+			protected function addBtns(from:uint, to:uint):void {
+				for (var i:uint=from; i<=to; i++) {
+					if (!btns[i] && i<=totalPages && i>0) addBtn(i);
+				}
+			}
+			protected function addEllipsis():void {
+				var lbl:Label=new Label();
+				lbl.text='...';
+				addElement(lbl);
+			}
+		]]>
+	</fx:Script>
+</s:HGroup>
