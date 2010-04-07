@@ -16,6 +16,7 @@
 			protected var _currentPage:uint;
 			protected var btns:Array;
 			//
+			[Bindable]
 			public function set totalPages(c:uint):void {
 				_totalPages=c;
 				invalidateProperties();
@@ -23,6 +24,7 @@
 			public function get totalPages():uint {
 				return _totalPages;
 			}
+			[Bindable]
 			public function set currentPage(p:uint):void {
 				_currentPage=p;
 				invalidateProperties();
