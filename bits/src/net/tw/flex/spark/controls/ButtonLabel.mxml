@@ -2,41 +2,40 @@
 <s:Label xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx"
-		 color.hover="{hoverColor}"
-		 color.down="{downColor}"
+		 color.idle="{idleColor}"
+		 color.hover="{hoverColor ? hoverColor : getStyle('color')}"
+		 color.down="{downColor ? downColor : getStyle('color')}"
+		 textDecoration.hover="{underlineOnHover ? 'underline' : getStyle('text-decoration')}"
 		 text="Label">
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
 	<fx:Script>
 		<![CDATA[
+			[Bindable] public var idleColor:uint;
 			[Bindable] public var hoverColor:uint;
 			[Bindable] public var downColor:uint;
+			[Bindable] public var underlineOnHover:Boolean=false;
 		]]>
 	</fx:Script>
+	<s:creationComplete><![CDATA[
+		if (!idleColor) idleColor=getStyle('color');
+	]]></s:creationComplete>
 	<s:states>
 		<s:State name="idle" />
 		<s:State name="hover" />
 		<s:State name="down" />
 	</s:states>
-	<s:mouseOver>
-		<![CDATA[
-			if (hoverColor) currentState='hover';
-		]]>
-	</s:mouseOver>
-	<s:mouseDown>
-		<![CDATA[
-			if (downColor) currentState='down'; 
-		]]>
-	</s:mouseDown>
-	<s:mouseUp>
-		<![CDATA[
-			if (hoverColor) currentState='hover';
-		]]>
-	</s:mouseUp>
-	<s:mouseOut>
-		<![CDATA[
-			currentState='idle';
-		]]>
-	</s:mouseOut>
+	<s:mouseOver><![CDATA[
+		currentState='hover';
+	]]></s:mouseOver>
+	<s:mouseDown><![CDATA[
+		currentState='down'; 
+	]]></s:mouseDown>
+	<s:mouseUp><![CDATA[
+		currentState='hover';
+	]]></s:mouseUp>
+	<s:mouseOut><![CDATA[
+		currentState='idle';
+	]]></s:mouseOut>
 </s:Label>
