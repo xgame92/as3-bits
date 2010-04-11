@@ -3,7 +3,8 @@
 		  xmlns:s="library://ns.adobe.com/flex/spark" 
 		  xmlns:mx="library://ns.adobe.com/flex/mx"
 		  verticalAlign="middle"
-		  gap="-1">
+		  gap="-1"
+		  click="onClick(event)">
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
@@ -15,6 +16,7 @@
 			protected var _totalPages:uint;
 			protected var _currentPage:uint;
 			protected var btns:Array;
+			protected var _clickedPageIndex:uint;
 			//
 			[Bindable]
 			public function set totalPages(c:uint):void {
@@ -69,6 +71,20 @@
 				var lbl:Label=new Label();
 				lbl.text='...';
 				addElement(lbl);
+			}
+			protected function onClick(e:MouseEvent):void {
+				if (!(e.target is Button)) return;
+				var b:Button=Button(e.target);
+				if (b.label=='«') {
+					_clickedPageIndex=currentPage-1;
+				} else if (b.label=='»') {
+					_clickedPageIndex=currentPage+1;
+				} else {
+					_clickedPageIndex=uint(b.label);
+				}
+			}
+			public function get clickedPageIndex():uint {
+				return _clickedPageIndex;
 			}
 		]]>
 	</fx:Script>
