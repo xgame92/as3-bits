@@ -2,7 +2,7 @@
 <s:Label xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx"
-		 color.idle="{idleColor}"
+		 color.idle="{idleColor}" verticalAlign="middle"
 		 color.hover="{hoverColor ? hoverColor : getStyle('color')}"
 		 color.down="{downColor ? downColor : getStyle('color')}"
 		 textDecoration.hover="{underlineOnHover ? 'underline' : getStyle('text-decoration')}"
