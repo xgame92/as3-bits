@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:WindowedApplication xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					   xmlns:s="library://ns.adobe.com/flex/spark" 
+					   xmlns:mx="library://ns.adobe.com/flex/mx">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<s:applicationComplete>
+		<![CDATA[
+			ScreenMouse.stage=stage;
+			stage.addEventListener(MouseEvent.MOUSE_MOVE, onMM);
+		]]>
+	</s:applicationComplete>
+	<fx:Script>
+		<![CDATA[
+			import flash.utils.getTimer;
+			import net.tw.util.air.ScreenMouse;
+			protected function onMM(e:MouseEvent):void {
+				ti.text=ScreenMouse.x+' - '+ScreenMouse.y;
+			}
+		]]>
+	</fx:Script>
+	<s:Label text="Label" horizontalCenter="0" verticalCenter="0" id="ti"/>
+</s:WindowedApplication>
