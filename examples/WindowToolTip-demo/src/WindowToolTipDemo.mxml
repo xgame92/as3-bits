@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:WindowedApplication xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					   xmlns:s="library://ns.adobe.com/flex/spark" 
+					   xmlns:mx="library://ns.adobe.com/flex/mx">
+	<fx:Script>
+		<![CDATA[
+			import flash.utils.setTimeout;
+			import flash.utils.getTimer;
+			import net.tw.util.air.WindowToolTip;
+			//
+			protected var wtt:WindowToolTip;
+			protected var ttw:TTWindow;
+			//
+			protected function onTTHide(e:Event):void {
+				ttw.tn.alpha=0;
+			}
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<s:applicationComplete><![CDATA[
+		ttw=new TTWindow();
+		wtt=new WindowToolTip(ttw, stage);
+		wtt.addEventListener(WindowToolTip.HIDE, onTTHide);
+	]]></s:applicationComplete>
+	<s:Button label="Hop." horizontalCenter="0" verticalCenter="0">
+		<s:mouseOver><![CDATA[
+			wtt.show();
+			ttw.tn.source=null;
+			ttw.tn.source=getTimer()%2==0 ? 'http://www.libpng.org/pub/png/img_png/AlphaBall.png' : 'http://www.libpng.org/pub/png/img_png/AlphaEdge.png';
+		]]></s:mouseOver>
+		<s:mouseOut>
+			<![CDATA[
+				wtt.hide();
+			]]>
+		</s:mouseOut>
+	</s:Button>
+</s:WindowedApplication>
