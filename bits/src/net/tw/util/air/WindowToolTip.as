@@ -14,8 +14,11 @@ package net.tw.util.air {
 		protected var _offset:Point;
 		//
 		public static const SHOW:String='show';
+		public static const SHOWING:String='showing';
 		public static const HIDE:String='hide';
+		public static const HIDING:String='hiding';
 		public static const PLACE:String='place';
+		public static const PLACING:String='placing';
 		//
 		public function WindowToolTip(w:Window, s:Stage) {
 			_w=w;
@@ -37,17 +40,21 @@ package net.tw.util.air {
 			return _offset;
 		}
 		public function show():void {
+			dispatchEvent(new Event(SHOWING));
 			if (!nativeWindow) window.open();
-			dispatchEvent(new Event(SHOW));
 			stage.addEventListener(MouseEvent.MOUSE_MOVE, place);
+			dispatchEvent(new Event(SHOW));
 			place();
 		}
 		public function hide():void {
-			nativeWindow.visible=false;
-			dispatchEvent(new Event(HIDE));
+			dispatchEvent(new Event(HIDING));
+			if (nativeWindow) nativeWindow.visible=false;
 			_s.removeEventListener(MouseEvent.MOUSE_MOVE, place);
+			dispatchEvent(new Event(HIDE));
 		}
 		protected function place(e:Event=null):void {
+			dispatchEvent(new Event(PLACING));
+			//
 			var dest:int=ScreenMouse.getX(stage)+offset.x;
 			if (dest+nativeWindow.width>Screen.mainScreen.bounds.width) dest-=nativeWindow.width+2*offset.x;
 			nativeWindow.x=dest;
