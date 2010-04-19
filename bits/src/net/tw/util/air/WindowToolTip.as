@@ -1,12 +1,15 @@
 package net.tw.util.air {
-	import spark.components.Window;
-	import flash.display.Stage;
-	import flash.events.MouseEvent;
-	import flash.events.Event;
-	import flash.geom.Point;
 	import flash.display.NativeWindow;
 	import flash.display.Screen;
+	import flash.display.Stage;
+	import flash.events.Event;
 	import flash.events.EventDispatcher;
+	import flash.events.MouseEvent;
+	import flash.events.NativeWindowBoundsEvent;
+	import flash.geom.Point;
+	
+	import spark.components.Window;
+
 	//
 	public class WindowToolTip extends EventDispatcher {
 		protected var _w:Window;
@@ -26,6 +29,10 @@ package net.tw.util.air {
 			_offset=new Point(10, 10);
 			stage.nativeWindow.addEventListener(Event.CLOSING, closeWindow);
 			stage.nativeWindow.addEventListener(Event.ACTIVATE, bringToFront);
+			handleNativeWindowEvents();
+		}
+		protected function handleNativeWindowEvents():void {
+			if (nativeWindow) nativeWindow.addEventListener(NativeWindowBoundsEvent.RESIZE, place);
 		}
 		public function get window():Window {
 			return _w;
@@ -41,7 +48,10 @@ package net.tw.util.air {
 		}
 		public function show():void {
 			dispatchEvent(new Event(SHOWING));
-			if (!nativeWindow) window.open();
+			if (!nativeWindow) {
+				window.open();
+				handleNativeWindowEvents();
+			}
 			stage.addEventListener(MouseEvent.MOUSE_MOVE, place);
 			dispatchEvent(new Event(SHOW));
 			place();
