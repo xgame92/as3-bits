@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<index>
+	<title>Source of TileLayoutSettings</title>
+	<nodes>
+		<node label="src">
+			<node icon="mxmlAppIcon" selected="true" label="TileLayoutSettings.mxml" url="source/TileLayoutSettings.mxml.html"/>
+		</node>
+	</nodes>
+	<zipfile label="Download source (ZIP, 5K)" url="TileLayoutSettings.zip">
+	</zipfile>
+	<sdklink label="Download Flex SDK" url="http://www.adobe.com/go/flex4_sdk_download">
+	</sdklink>
+</index>
