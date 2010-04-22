@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" minWidth="955" minHeight="600">
+	<s:layout>
+		<s:VerticalLayout/>
+	</s:layout>
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import mx.graphics.SolidColor;
+			
+			import spark.primitives.Rect;
+			protected function fill():void {
+				g.removeAllElements();
+				var rect:Rect;
+				for (var i:int=0; i<100; i++) {
+					rect=new Rect();
+					rect.width=rect.maxWidth=10+Math.random()*100;
+					rect.height=rect.maxHeight=10+Math.random()*100;
+					rect.fill=new SolidColor(Math.random()*(255*255*255));
+					g.addElement(rect);
+				}
+			}
+		]]>
+	</fx:Script>
+	<s:creationComplete>
+		<![CDATA[
+		fill();
+		]]>
+	</s:creationComplete>
+	<s:HGroup width="100%" paddingBottom="10" paddingLeft="10" paddingRight="10" paddingTop="10" verticalAlign="bottom">
+		<s:Button label="Randomize elements" click="fill()"/>
+		<s:VGroup>
+			<s:Label text="columnAlign"/>
+			<s:DropDownList id="ddColAl" requireSelection="true" dataProvider="{new ArrayCollection(['left', 'justifyUsingGap', 'justifyUsingWidth'])}" />
+		</s:VGroup>
+		<s:VGroup>
+			<s:Label text="horizontalAlign"/>
+			<s:DropDownList id="ddHorAl" requireSelection="true" dataProvider="{new ArrayCollection(['left', 'center', 'right', 'justify'])}" />
+		</s:VGroup>
+		<s:VGroup>
+			<s:Label text="orientation"/>
+			<s:DropDownList id="ddOr" requireSelection="true" dataProvider="{new ArrayCollection(['rows', 'columns'])}" />
+		</s:VGroup>
+		<s:VGroup>
+			<s:Label text="rowAlign"/>
+			<s:DropDownList id="ddRowAl" requireSelection="true" dataProvider="{new ArrayCollection(['top', 'justifyUsingGap', 'justifyUsingHeight'])}" />
+		</s:VGroup>
+		<s:VGroup>
+			<s:Label text="verticalAlign"/>
+			<s:DropDownList id="ddVertAl" requireSelection="true" dataProvider="{new ArrayCollection(['top', 'middle', 'bottom', 'justify'])}" />
+		</s:VGroup>
+	</s:HGroup>
+	<s:Scroller width="100%" height="100%">
+		<s:Group width="100%" height="100%" id="g">
+			<s:layout>
+				<s:TileLayout id="tl"
+							  columnAlign="{ddColAl.selectedItem}"
+							  horizontalAlign="{ddHorAl.selectedItem}"
+							  orientation="{ddOr.selectedItem}"
+							  rowAlign="{ddRowAl.selectedItem}"
+							  verticalAlign="{ddVertAl.selectedItem}"/>
+			</s:layout>
+		</s:Group>
+	</s:Scroller>
+</s:Application>
