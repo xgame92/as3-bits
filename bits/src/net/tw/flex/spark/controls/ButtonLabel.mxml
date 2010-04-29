@@ -12,10 +12,14 @@
 	</fx:Declarations>
 	<fx:Script>
 		<![CDATA[
-			[Bindable] public var idleColor:uint;
-			[Bindable] public var hoverColor:uint;
-			[Bindable] public var downColor:uint;
-			[Bindable] public var underlineOnHover:Boolean=false;
+			[Bindable]
+			public var idleColor:uint;
+			[Bindable]
+			public var hoverColor:uint;
+			[Bindable]
+			public var downColor:uint;
+			[Bindable]
+			public var underlineOnHover:Boolean=false;
 		]]>
 	</fx:Script>
 	<s:creationComplete><![CDATA[
