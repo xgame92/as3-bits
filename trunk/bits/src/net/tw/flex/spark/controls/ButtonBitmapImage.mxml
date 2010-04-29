@@ -8,9 +8,12 @@
 	</fx:Declarations>
 	<fx:Script>
 		<![CDATA[
-			[Bindable]public var source:Class;
-			[Bindable]public var hoverSource:Class;
-			[Bindable]public var downSource:Class;
+			[Bindable]
+			public var source:Class;
+			[Bindable]
+			public var hoverSource:Class;
+			[Bindable]
+			public var downSource:Class;
 		]]>
 	</fx:Script>
 	<s:mouseOver>
