@@ -5,6 +5,7 @@ package net.tw.util.air {
 	import flash.events.Event;
 	import flash.filesystem.File;
 	import flash.system.Capabilities;
+	import net.tw.util.OS;
 	
 	import mx.core.Window;
 	import flash.geom.Point;
@@ -31,10 +32,13 @@ package net.tw.util.air {
 			return getDescriptor().ns::copyright;
 		}
 		public static function runningOnMac():Boolean {
-			return Capabilities.os.indexOf("Mac")==0;
+			return OS.isMac();
 		}
 		public static function runningOnLinux():Boolean {
-			return Capabilities.os.indexOf("Linux")==0;
+			return OS.isLinux();
+		}
+		public static function runningOnWindows():Boolean {
+			return OS.isWindows();
 		}
 		public static function fixLoadURL(fileURL:String):String {
 			return ((App.runningOnLinux() || App.runningOnMac()) && fileURL.substr(0, 7)!='file://') ? 'file://'+fileURL : fileURL;
