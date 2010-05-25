@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Window xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		  xmlns:s="library://ns.adobe.com/flex/spark" 
+		  xmlns:mx="library://ns.adobe.com/flex/mx"
+		  title="About" type="utility" resizable="false"
+		  showStatusBar="false" backgroundColor="#1E202D" width="170" height="190">
+	<s:layout>
+		<s:VerticalLayout horizontalAlign="center" paddingLeft="20" paddingTop="20" paddingRight="20" paddingBottom="20" gap="10"/>
+	</s:layout>
+	<fx:Script>
+		<![CDATA[
+			import flash.net.navigateToURL;
+			import net.tw.util.SO;
+			import net.tw.util.air.App;
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<s:BitmapImage source="@Embed('icon/48.png')" fillMode="clip"  height="58"/>
+	<s:Label text="Version" id="lblVersion" fontSize="22">
+		<s:creationComplete>
+			<![CDATA[
+				lblVersion.text=App.getName()+' '+App.getVersion();
+			]]>
+		</s:creationComplete>
+	</s:Label>
+	<s:Label text="by TOKI WOKI." buttonMode="true" useHandCursor="true">
+		<s:click>
+			<![CDATA[
+				navigateToURL(new URLRequest('http://toki-woki.net/p/Dok/'));
+			]]>
+		</s:click>
+	</s:Label>
+	<s:Button label="Reset class cache" click="SO.clear()"/>
+</s:Window>
