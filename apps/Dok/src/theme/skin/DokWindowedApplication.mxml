@@ -1,0 +1,61 @@
+<s:SparkSkin xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark" 
+    xmlns:fb="http://ns.adobe.com/flashbuilder/2009" alpha.disabledGroup="0.5" xmlns:controls="net.tw.flex.spark.controls.*" >
+     <fx:Metadata>[HostComponent("spark.components.WindowedApplication")]</fx:Metadata>
+	 <fx:Script>
+		 <![CDATA[
+			 import net.tw.util.air.App;
+		 ]]>
+	 </fx:Script>
+    
+     <s:states>
+        <s:State name="normal" />
+        <s:State name="disabled" stateGroups="disabledGroup" />
+        <s:State name="normalAndInactive" stateGroups="inactiveGroup" />
+        <s:State name="disabledAndInactive" stateGroups="disabledGroup, inactiveGroup" />
+    </s:states>
+	
+	<s:creationComplete>
+		<![CDATA[
+			if (App.runningOnMac()) {
+				btns.horizontalAlign='left';
+				btns.setElementIndex(btns.getElementAt(0), 1);
+			}
+		]]>
+	</s:creationComplete>
+
+	<s:BitmapImage id="bg" source="@Embed(source='theme/asset/win.png', scaleGridLeft='36', scaleGridRight='796', scaleGridTop='56', scaleGridBottom='592')" left="0" right="0" top="0" bottom="0"/>
+	<s:Label width="100%" text="{hostComponent.title}"
+			 textAlign="center"
+			 color="#ffffff" fontSize="12" paddingTop="9" height="26"
+			 top="20" left="26" right="26"
+			 alpha.inactiveGroup=".5"
+			 mouseDown="hostComponent.nativeWindow.startMove()">
+		<s:filters>
+			<s:DropShadowFilter color="#000000" angle="90" distance="-1" blurX="0" blurY="0" />
+		</s:filters>
+	</s:Label>
+	<s:HGroup id="btns" left="36" right="36" top="20" height="26" gap="8" verticalAlign="middle" horizontalAlign="right" alpha.inactiveGroup=".5">
+		<controls:ButtonBitmapImage source="@Embed('theme/asset/min.png')" click="hostComponent.nativeWindow.minimize()" />
+		<controls:ButtonBitmapImage source="@Embed('theme/asset/close.png')" click="hostComponent.nativeApplication.exit()" />
+	</s:HGroup>
+	<s:Group id="contentGroup"
+			 minWidth="0" minHeight="0"
+			 top="56" bottom="62" left="27" right="27"/>
+	<s:BitmapImage fillMode="repeat" source="@Embed('theme/asset/leather.png')" left="27" right="27" bottom="32" height="20" />
+	<s:Rect left="27" right="27" height="1" bottom="52">
+		<s:fill>
+			<s:SolidColor color="#000000" />
+		</s:fill>
+	</s:Rect>
+	<s:HGroup left="27" right="27" bottom="32" height="20" id="statusBar" verticalAlign="bottom" paddingLeft="4" alpha.inactiveGroup=".5">
+		<controls:ButtonBitmapImage id="statusBarInfoButton" source="@Embed('theme/asset/info.png')" height="17">
+			<controls:creationComplete>
+				<![CDATA[
+					statusBarInfoButton.img.fillMode="clip";
+				]]>
+			</controls:creationComplete>
+		</controls:ButtonBitmapImage>
+		<s:Label width="100%" id="statusText" fontSize="10" paddingBottom="4" mouseDown="hostComponent.nativeWindow.startMove()" />
+		<controls:ButtonBitmapImage source="@Embed('theme/asset/resize.png')" mouseDown="hostComponent.nativeWindow.startResize()" />
+	</s:HGroup>
+</s:SparkSkin>
