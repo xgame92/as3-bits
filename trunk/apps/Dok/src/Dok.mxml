@@ -109,12 +109,13 @@
 			import spark.components.NavigatorContent;
 			import spark.events.IndexChangeEvent;
 			//
-			protected var allClassesURL:String='http://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/all-classes.html';
+			protected const allClassesURL:String='http://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/all-classes.html';
 			protected var _hf:HTMLFixer=new HTMLFixer();
 			//
 			protected var _loadedURL:String;
 			protected var _xmlParser:Function;
 			protected var _sorter:Sort;
+			protected var _infoPrompt:InfoPrompt;
 			//
 			public const PROPS:uint=0;
 			public const METHODS:uint=1;
@@ -431,9 +432,13 @@
 						}
 					}
 				}
-				if (_selectionDict[lst]) lst.selectedItem=_selectionDict[lst];
+				if (_selectionDict[lst]) {
+					lst.selectedItem=_selectionDict[lst];
+					callLater(function():void {
+						lst.ensureIndexIsVisible(lst.selectedIndex);
+					});
+				}
 			}
-			protected var _infoPrompt:InfoPrompt;
 		]]>
 	</fx:Script>
 	<s:click>
