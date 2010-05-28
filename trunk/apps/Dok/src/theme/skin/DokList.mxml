@@ -49,7 +49,7 @@
 				   left="0" right="0" top="0" bottom="0"/>
 
     <!--- The Scroller component to add scroll bars to the list. -->
-    <s:Scroller left="1" top="1" right="0" bottom="1" id="scroller" minViewportInset="1" hasFocusableChildren="false">
+    <s:Scroller left="0" top="0" right="0" bottom="1" id="scroller" minViewportInset="1" hasFocusableChildren="false">
         <!--- @copy spark.components.SkinnableDataContainer#dataGroup -->
         <s:DataGroup id="dataGroup" itemRenderer="spark.skins.spark.DefaultItemRenderer">
             <s:layout>
