@@ -41,7 +41,7 @@
 		]]>
 	</s:mouseOut>
 	
-	<s:Rect width="100%" top="0" bottom="0" radiusX="4" radiusY="4" id="selector">
+	<s:Rect width="100%" top="0" bottom="0" radiusX="3" radiusY="3" id="selector">
 		<s:fill>
 			<s:SolidColor color="#D0131A" alpha=".3" />
 		</s:fill>
