@@ -30,7 +30,6 @@ package net.tw.util.air {
 			}
 		}
 		private function onExit(e:Event):void {
-			//trace('onExit');
 			dispatchEvent(new Event("store"));
 			if (autoStoreOnExit) store();
 		}
@@ -42,6 +41,7 @@ package net.tw.util.air {
 			}
 		}
 		public function storeVar(uniqueIdentifer:String, val:*):void {
+			removeVar(uniqueIdentifer);
 			vars.push({id:uniqueIdentifer, v:val});
 			if (autoStoreVars) store();
 		}
@@ -52,12 +52,9 @@ package net.tw.util.air {
 		public function removeVar(uniqueIdentifer:String):void {
 			for (var i:uint=0; i<vars.length; i++) {
 				var o:Object=vars[i];
-				if (o.id==uniqueIdentifer) {
-					vars.splice(i, 1);
-					if (autoStoreVars) store();
-					return;
-				}
+				if (o.id==uniqueIdentifer) vars.splice(i, 1);
 			}
+			if (autoStoreVars) store();
 		}
 		protected function getPrefs():Object {
 			var bytes:ByteArray=EncryptedLocalStore.getItem(itemName);
@@ -68,7 +65,6 @@ package net.tw.util.air {
 			return prefs[uniqueIdentifier] ? prefs[uniqueIdentifier] : null;
 		}
 		public function store():void {
-			//trace('store');
 			EncryptedLocalStore.removeItem(itemName);
 			var prefs:Object=new Object();
 			for each (var o:Object in objects) {
