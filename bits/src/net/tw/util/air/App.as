@@ -4,12 +4,12 @@ package net.tw.util.air {
 	import flash.display.Screen;
 	import flash.events.Event;
 	import flash.filesystem.File;
+	import flash.geom.Point;
 	import flash.system.Capabilities;
-	import net.tw.util.OS;
 	
 	import mx.core.Window;
-	import flash.geom.Point;
-
+	
+	import net.tw.util.OS;
 	//
 	public class App {
 		public function App() {}
@@ -22,6 +22,10 @@ package net.tw.util.air {
 		public static function getName():String {
 			var ns:Namespace=getNamespace();
 			return getDescriptor().ns::name;
+		}
+		public static function getID():String {
+			var ns:Namespace=getNamespace();
+			return getDescriptor().ns::id;
 		}
 		public static function getVersion():String {
 			var ns:Namespace=getNamespace();
