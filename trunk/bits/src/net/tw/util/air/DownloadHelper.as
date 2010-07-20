@@ -17,17 +17,14 @@
 			url=u;
 			destination=dest;
 			_stream=new URLStream();
-			_stream.addEventListener(Event.COMPLETE, onComplete);
-			_stream.addEventListener(HTTPStatusEvent.HTTP_RESPONSE_STATUS, onStatus);
+			stream.addEventListener(Event.COMPLETE, onComplete);
+			//stream.addEventListener(HTTPStatusEvent.HTTP_RESPONSE_STATUS, onStatus);
 		}
-		protected function onStatus(e:HTTPStatusEvent):void {
-			//trace(e);
+		/*protected function onStatus(e:HTTPStatusEvent):void {
 			for (var i:int=0; i<e.responseHeaders.length; i++) {
 				var rh:URLRequestHeader=e.responseHeaders[i];
-				//trace('-', rh.name, rh.value);
 			}
-			//trace(e.responseURL);
-		}
+		}*/
 		public function set url(u:URLRequest):void {
 			_url=u;
 		}
@@ -56,7 +53,6 @@
 			stop();
 		}
 		protected function onComplete(e:Event):void {
-			//trace('complete');
 			var fs:FileStream=new FileStream();
 			fs.open(_destination, FileMode.WRITE);
 			//
