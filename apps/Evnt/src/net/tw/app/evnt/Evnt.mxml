@@ -6,7 +6,7 @@
 	<fx:Style source="style/main.css"/>
 	<fx:Declarations>
 		<fx:String id="classTemplate"><![CDATA[package [PACKAGE] {
-	import flash.events.Event;
+	[IMPORTS]
 	public class [CLASS_NAME] extends Event {
 		[CONSTANTS]
 		[PROPERTIES]
@@ -33,12 +33,13 @@
 		</s:ArrayList>
 		<s:ArrayList id="alProperties" collectionChange="updateClass()">
 			<s:source>
-				<fx:Object name='myProp' type='String' />
+				<fx:Object name='myProp' type='String' def='' />
 			</s:source>
 		</s:ArrayList>
 	</fx:Declarations>
 	<fx:Script>
 		<![CDATA[
+			import mx.events.DragEvent;
 			protected function onAppComplete():void {
 				updateClass();
 			}
@@ -71,15 +72,27 @@
 				var propGetters:Array=[];
 				var cloneParams:Array=[];
 				var toStringParams:Array=[];
+				var param:String;
+				var type:String;
+				var imports:Array=['import flash.events.Event;'];
 				for (i=0; i<alProperties.length; i++) {
 					item=alProperties.getItemAt(i);
-					declarations.push('protected var _'+item.name+':'+item.type+';');
-					parameters.push('$'+item.name+':'+item.type+', ');
+					type=item.type;
+					if (type.indexOf('.')>-1) {
+						var arType:Array=type.split('.');
+						type=arType[arType.length-1];
+						imports.push('import '+item.type+';');
+					}
+					declarations.push('protected var _'+item.name+':'+type+';');
+					param='$'+item.name+':'+type;
+					if (item.def!='') param+='='+item.def;
+					parameters.push(param+', ');
 					propInit.push('_'+item.name+'=$'+item.name+';');
-					propGetters.push(getterTemplate.split('[PROP_NAME]').join(item.name).replace('[TYPE]', item.type));
+					propGetters.push(getterTemplate.split('[PROP_NAME]').join(item.name).replace('[TYPE]', type));
 					cloneParams.push(item.name+', ');
 					toStringParams.push("'"+item.name+"'");
 				} 
+				s=s.replace('[IMPORTS]', imports.join('\n\t'));
 				s=s.replace('[PROPERTIES]', declarations.join('\n\t\t'));
 				s=s.replace('[PARAMETERS]', parameters.join(''));
 				s=s.replace('[PROPERTIES_INIT]', propInit.join('\n\t\t\t'));
@@ -99,12 +112,15 @@
 				updateClass();
 			}
 			protected function addProperty():void {
-				alProperties.addItem({name:'myProp', type:'String'});
+				alProperties.addItem({name:'myProp', type:'String', def:''});
 				updateClass();
 			}
 			protected function saveAs():void {
 				var fr:FileReference=new FileReference();
 				fr.save(taClass.text, eventClassName+'.as');
+			}
+			protected function allowDrop(e:DragEvent):void {
+				DataGrid(e.target).dropEnabled=e.dragInitiator==e.target;
 			}
 		]]>
 	</fx:Script>
@@ -113,7 +129,11 @@
 			<s:Label text="Class Package and Name" fontWeight="bold"/>
 			<s:TextInput width="100%" text="model.event.MyCustomEvent" id="tiPackageClass" change="updateClass()"/>
 			<s:Label text="Constants" fontWeight="bold"/>
-			<mx:DataGrid height="100%" width="100%" id="dgConstants" dataProvider="{alConstants}" editable="true" sortableColumns="false" draggableColumns="false">
+			<mx:DataGrid height="100%" width="100%" id="dgConstants"
+						 dataProvider="{alConstants}"
+						 editable="true"
+						 sortableColumns="false" draggableColumns="false"
+						 dragEnabled="true" dragMoveEnabled="true" dragEnter="allowDrop(event)">
 				<mx:columns>
 					<mx:DataGridColumn headerText="Name" dataField="name"/>
 					<!--<mx:DataGridColumn headerText="Value" dataField="val"/>-->
@@ -124,10 +144,15 @@
 				<s:Button label="-" enabled="{dgConstants.selectedItem}" click="alConstants.removeItemAt(dgConstants.selectedIndex)" />
 			</s:HGroup>
 			<s:Label text="Properties" fontWeight="bold"/>
-			<mx:DataGrid height="100%" width="100%" id="dgProperties" editable="true" dataProvider="{alProperties}" sortableColumns="false" draggableColumns="false">
+			<mx:DataGrid height="100%" width="100%" id="dgProperties"
+						 editable="true"
+						 dataProvider="{alProperties}"
+						 sortableColumns="false" draggableColumns="false"
+						 dragEnabled="true" dragMoveEnabled="true" dragEnter="allowDrop(event)">
 				<mx:columns>
 					<mx:DataGridColumn headerText="Name" dataField="name"/>
 					<mx:DataGridColumn headerText="Type" dataField="type"/>
+					<mx:DataGridColumn headerText="Default" dataField="def"/>
 				</mx:columns>
 			</mx:DataGrid>
 			<s:HGroup width="100%">
