@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" applicationComplete="onAppComplete()"
+			   minWidth="600" minHeight="450" pageTitle="Evnt — Custom AS3 Event Generator — TOKI WOKI.">
+	<fx:Style source="style/main.css"/>
+	<fx:Declarations>
+		<fx:String id="classTemplate"><![CDATA[package [PACKAGE] {
+	import flash.events.Event;
+	public class [CLASS_NAME] extends Event {
+		[CONSTANTS]
+		[PROPERTIES]
+		public function [CLASS_NAME](type:String, [PARAMETERS]bubbles:Boolean=false, cancelable:Boolean=false) {
+			super(type, bubbles, cancelable);
+			[PROPERTIES_INIT]
+		}
+[PROPERTIES_GETTERS]
+		override public function clone():Event {
+			return new [CLASS_NAME](type, [CLONE_PARAMETERS]bubbles, cancelable);
+		}
+		override public function toString():String {
+			return formatToString('[CLASS_NAME]', [TO_STRING_PARAMS]);
+		}
+	}
+}]]></fx:String>
+		<fx:String id="getterTemplate"><![CDATA[		public function get [PROP_NAME]():[TYPE] {
+			return _[PROP_NAME];
+		}]]></fx:String>
+		<s:ArrayList id="alConstants" collectionChange="updateClass()">
+			<s:source>
+				<fx:Object name='MY_CONST' />
+			</s:source>
+		</s:ArrayList>
+		<s:ArrayList id="alProperties" collectionChange="updateClass()">
+			<s:source>
+				<fx:Object name='myProp' type='String' />
+			</s:source>
+		</s:ArrayList>
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			protected function onAppComplete():void {
+				updateClass();
+			}
+			protected var eventClassName:String;
+			protected function getClassContent():String {
+				var s:String=classTemplate;
+				var i:int;
+				var item:Object;
+				//
+				var cp:Array=tiPackageClass.text.split('.');
+				eventClassName='';
+				var classPackage:String='';
+				if (cp.length>1) {
+					eventClassName=cp.pop();
+					classPackage=cp.join('.');
+				}
+				s=s.split('[CLASS_NAME]').join(eventClassName);
+				s=s.replace('[PACKAGE]', classPackage);
+				//
+				var declarations:Array=[];
+				for (i=0; i<alConstants.length; i++) {
+					item=alConstants.getItemAt(i);
+					declarations.push('public static const '+item.name+':String=\''+tiPackageClass.text+'.'+item.name+'\';');
+				} 
+				s=s.replace('[CONSTANTS]', declarations.join('\n\t\t'));
+				//
+				declarations=[];
+				var parameters:Array=[];
+				var propInit:Array=[];
+				var propGetters:Array=[];
+				var cloneParams:Array=[];
+				var toStringParams:Array=[];
+				for (i=0; i<alProperties.length; i++) {
+					item=alProperties.getItemAt(i);
+					declarations.push('protected var _'+item.name+':'+item.type+';');
+					parameters.push('$'+item.name+':'+item.type+', ');
+					propInit.push('_'+item.name+'=$'+item.name+';');
+					propGetters.push(getterTemplate.split('[PROP_NAME]').join(item.name).replace('[TYPE]', item.type));
+					cloneParams.push(item.name+', ');
+					toStringParams.push("'"+item.name+"'");
+				} 
+				s=s.replace('[PROPERTIES]', declarations.join('\n\t\t'));
+				s=s.replace('[PARAMETERS]', parameters.join(''));
+				s=s.replace('[PROPERTIES_INIT]', propInit.join('\n\t\t\t'));
+				s=s.replace('[PROPERTIES_GETTERS]', propGetters.join('\n'));
+				s=s.replace('[CLONE_PARAMETERS]', cloneParams.join(''));
+				s=s.replace('[TO_STRING_PARAMS]', "'type', 'bubbles', 'cancelable', "+toStringParams.join(', '));
+				//
+				return s;
+			}
+			protected function updateClass():void {
+				callLater(function():void {
+					taClass.text=getClassContent();
+				});
+			}
+			protected function addConstant():void {
+				alConstants.addItem({name:'MY_CONST'/*, val:'MY_CONST'*/});
+				updateClass();
+			}
+			protected function addProperty():void {
+				alProperties.addItem({name:'myProp', type:'String'});
+				updateClass();
+			}
+			protected function saveAs():void {
+				var fr:FileReference=new FileReference();
+				fr.save(taClass.text, eventClassName+'.as');
+			}
+		]]>
+	</fx:Script>
+	<mx:HDividedBox left="10" right="10" top="10" bottom="10">
+		<s:VGroup height="100%" width="30%">
+			<s:Label text="Class Package and Name" fontWeight="bold"/>
+			<s:TextInput width="100%" text="model.event.MyCustomEvent" id="tiPackageClass" change="updateClass()"/>
+			<s:Label text="Constants" fontWeight="bold"/>
+			<mx:DataGrid height="100%" width="100%" id="dgConstants" dataProvider="{alConstants}" editable="true" sortableColumns="false" draggableColumns="false">
+				<mx:columns>
+					<mx:DataGridColumn headerText="Name" dataField="name"/>
+					<!--<mx:DataGridColumn headerText="Value" dataField="val"/>-->
+				</mx:columns>
+			</mx:DataGrid>
+			<s:HGroup width="100%">
+				<s:Button label="+" click="addConstant()" />
+				<s:Button label="-" enabled="{dgConstants.selectedItem}" click="alConstants.removeItemAt(dgConstants.selectedIndex)" />
+			</s:HGroup>
+			<s:Label text="Properties" fontWeight="bold"/>
+			<mx:DataGrid height="100%" width="100%" id="dgProperties" editable="true" dataProvider="{alProperties}" sortableColumns="false" draggableColumns="false">
+				<mx:columns>
+					<mx:DataGridColumn headerText="Name" dataField="name"/>
+					<mx:DataGridColumn headerText="Type" dataField="type"/>
+				</mx:columns>
+			</mx:DataGrid>
+			<s:HGroup width="100%">
+				<s:Button label="+" click="addProperty()" />
+				<s:Button label="-" enabled="{dgProperties.selectedItem}" click="alProperties.removeItemAt(dgProperties.selectedIndex)" />
+			</s:HGroup>
+		</s:VGroup>
+		<s:VGroup width="70%" height="100%">
+			<s:TextArea width="100%" height="100%" id="taClass"/>
+			<s:HGroup horizontalAlign="right" width="100%" verticalAlign="middle">
+				<s:Label text="Evnt — Custom AS3 Event Generator — TOKI WOKI." color="#848484" paddingTop="2" />
+				<s:Button label="Copy to Clipboard" click="System.setClipboard(taClass.text)" />
+				<s:Button label="Save As..." click="saveAs()" />
+			</s:HGroup>
+		</s:VGroup>
+	</mx:HDividedBox>
+</s:Application>
