@@ -2,7 +2,7 @@
 <s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
 			   xmlns:s="library://ns.adobe.com/flex/spark" 
 			   xmlns:mx="library://ns.adobe.com/flex/mx" applicationComplete="onAppComplete()"
-			   minWidth="600" minHeight="450" pageTitle="Evnt — Custom AS3 Event Generator — TOKI WOKI.">
+			   minWidth="600" minHeight="450" pageTitle="Evnt — Custom AS3 Event File Generator — TOKI WOKI.">
 	<fx:Style source="style/main.css"/>
 	<fx:Declarations>
 		<fx:String id="classTemplate"><![CDATA[package [PACKAGE] {
@@ -71,7 +71,7 @@
 				var propInit:Array=[];
 				var propGetters:Array=[];
 				var cloneParams:Array=[];
-				var toStringParams:Array=[];
+				var toStringParams:Array=["'type'", "'bubbles'", "'cancelable'"];
 				var param:String;
 				var type:String;
 				var imports:Array=['import flash.events.Event;'];
@@ -81,7 +81,8 @@
 					if (type.indexOf('.')>-1) {
 						var arType:Array=type.split('.');
 						type=arType[arType.length-1];
-						imports.push('import '+item.type+';');
+						var importStr:String='import '+item.type+';';
+						if (imports.indexOf(importStr)==-1) imports.push(importStr);
 					}
 					declarations.push('protected var _'+item.name+':'+type+';');
 					param='$'+item.name+':'+type;
@@ -98,7 +99,7 @@
 				s=s.replace('[PROPERTIES_INIT]', propInit.join('\n\t\t\t'));
 				s=s.replace('[PROPERTIES_GETTERS]', propGetters.join('\n'));
 				s=s.replace('[CLONE_PARAMETERS]', cloneParams.join(''));
-				s=s.replace('[TO_STRING_PARAMS]', "'type', 'bubbles', 'cancelable', "+toStringParams.join(', '));
+				s=s.replace('[TO_STRING_PARAMS]', toStringParams.join(', '));
 				//
 				return s;
 			}
@@ -163,7 +164,7 @@
 		<s:VGroup width="70%" height="100%">
 			<s:TextArea width="100%" height="100%" id="taClass"/>
 			<s:HGroup horizontalAlign="right" width="100%" verticalAlign="middle">
-				<s:Label text="Evnt — Custom AS3 Event Generator — TOKI WOKI." color="#848484" paddingTop="2" />
+				<s:Label text="Evnt — Custom AS3 Event File Generator — TOKI WOKI." color="#848484" paddingTop="2" />
 				<s:Button label="Copy to Clipboard" click="System.setClipboard(taClass.text)" />
 				<s:Button label="Save As..." click="saveAs()" />
 			</s:HGroup>
