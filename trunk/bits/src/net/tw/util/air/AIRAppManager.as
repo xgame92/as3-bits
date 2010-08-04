@@ -1,6 +1,7 @@
 package net.tw.util.air {
 	import com.roguedevelopment.air.*;
 	import net.tw.util.air.events.AIRAppManagerEvent;
+	import net.tw.util.VersionUtil;
 	/**
 	 * @author Quentin T - http://toki-woki.net
 	 */
@@ -68,7 +69,7 @@ package net.tw.util.air {
 			removeEventListener(AIRBrowserRuntimeEvent.READY, onReady);
 			if (runtimeStatus==STATUS_INSTALLED) {
 				addEventListener(AIRBrowserRuntimeEvent.APP_VERSION_RESULT, onAppVersion);
-				getApplicationVersion(appID, pubID);
+				try {getApplicationVersion(appID, pubID);} catch (er:Error) {}
 			} else {
 				dispatchEvent(new AIRAppManagerEvent(AIRAppManagerEvent.CONFIG_GOT));
 			}
@@ -78,6 +79,10 @@ package net.tw.util.air {
 		}
 		public function get installedAppVersion():String {
 			return _intalledAppVersion;
+		}
+		public function needsInstallOrUpgrade(requiredAppVersion:String):Boolean {
+			if (!appIsInstalled) return true;
+			return VersionUtil.compare(requiredAppVersion, installedAppVersion);
 		}
 		public function get appIsInstalled():Boolean {
 			return installedAppVersion!=null;

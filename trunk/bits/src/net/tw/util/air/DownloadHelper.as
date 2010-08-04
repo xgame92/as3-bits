@@ -40,16 +40,19 @@
 		public function get stream():URLStream {
 			return _stream;
 		}
+		public function get connected():Boolean {
+			return stream.connected;
+		}
 		//
 		public function start():void {
-			_stream.load(url);
+			stream.load(url);
 		}
 		protected function stop():void {
-			_stream.close();
+			stream.close();
 			//_stream.removeEventListener(Event.COMPLETE, onComplete);
 		}
 		public function cancel():void {
-			if (!_stream.connected) return;
+			if (!connected) return;
 			stop();
 		}
 		protected function onComplete(e:Event):void {
@@ -57,7 +60,7 @@
 			fs.open(_destination, FileMode.WRITE);
 			//
 			var ba:ByteArray=new ByteArray();
-			_stream.readBytes(ba, 0, _stream.bytesAvailable);
+			stream.readBytes(ba, 0, stream.bytesAvailable);
 			fs.writeBytes(ba, 0, ba.length);
 			ba.clear();
 			//
