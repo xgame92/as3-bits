@@ -80,7 +80,7 @@ package net.tw.util.air {
 		public function get installedAppVersion():String {
 			return _intalledAppVersion;
 		}
-		public function needsInstallOrUpgrade(requiredAppVersion:String):Boolean {
+		public function needsInstall(requiredAppVersion:String):Boolean {
 			if (!appIsInstalled) return true;
 			return VersionUtil.compare(requiredAppVersion, installedAppVersion);
 		}
