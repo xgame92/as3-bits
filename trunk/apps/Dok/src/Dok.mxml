@@ -170,7 +170,8 @@
 						isInterface=false
 					}
 					isAIR=String(td..img.@src)!='';
-					href=String(td..a.@href).split("'")[1];
+					//href=String(td..a.@href).split("'")[1];
+					href=String(td..a.@onclick).split("'")[1];
 					classesProvider.addItem({
 						label:lbl,
 						href:urlPrefix+'/'+href,
@@ -231,12 +232,10 @@
 					}
 					inheritanceBar.dataProvider=o['dpInheritance'];
 					ddSubClasses.dataProvider=o['dpSubClasses'];
-					
 					//
 					afterClassDetailsDisplayed();
 					return;
 				}
-				//
 				handleLoadLogic(lstClasses.selectedItem.href, parseClassDetails);
 			}
 			protected var _classXML:XML;
