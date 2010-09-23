@@ -72,5 +72,11 @@ package net.tw.util.air {
 				if (activateOnHide) activateOnHide.activate();
 			});
 		}
+		public static function minimizeOnClose(w:NativeWindow):void {
+			w.addEventListener(Event.CLOSING, function(e:Event):void {
+				e.preventDefault();
+				w.minimize();
+			});
+		}
 	}
 }
