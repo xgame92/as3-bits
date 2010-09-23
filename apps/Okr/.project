@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+	<name>Okr</name>
+	<comment></comment>
+	<projects>
+	</projects>
+	<buildSpec>
+		<buildCommand>
+			<name>com.adobe.flexbuilder.project.flexbuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+	</buildSpec>
+	<natures>
+		<nature>com.adobe.flexbuilder.project.actionscriptnature</nature>
+	</natures>
+	<linkedResources>
+		<link>
+			<name>[source path] common-src</name>
+			<type>2</type>
+			<location>C:/as3/common/src</location>
+		</link>
+		<link>
+			<name>[source path] hype-hype-605a391-src</name>
+			<type>2</type>
+			<location>C:/as3/hype-hype-605a391/src</location>
+		</link>
+		<link>
+			<name>[source path] minimalcomps-src</name>
+			<type>2</type>
+			<location>C:/as3/minimalcomps/src</location>
+		</link>
+	</linkedResources>
+</projectDescription>
