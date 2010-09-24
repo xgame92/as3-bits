@@ -34,6 +34,7 @@
 	<s:mouseUp>
 		<![CDATA[
 			if (hoverSource) currentState='hover';
+			else currentState='idle';
 		]]>
 	</s:mouseUp>
 	<s:states>
