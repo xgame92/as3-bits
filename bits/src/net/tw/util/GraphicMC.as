@@ -1,6 +1,7 @@
 package net.tw.util {
 	import flash.display.MovieClip;
 	import flash.events.Event;
+	import flash.utils.Dictionary;
 	/**
 	 * @author Quentin T - http://toki-woki.net
 	 */
@@ -10,7 +11,7 @@ package net.tw.util {
 		public static var SINGLE_FRAME:String='Single frame';
 		//
 		protected static var _ar:Array=[];
-		protected static var _done:Array=[];
+		protected static var _done:Dictionary=new Dictionary();
 		protected static var _depths:Array=[];
 		protected static var _mcTimer:MovieClip;
 		//
@@ -42,7 +43,7 @@ package net.tw.util {
 		}
 		public static function resetRegistrations():void {
 			_ar=[];
-			_done=[];
+			_done=new Dictionary();
 			_depths=[];
 		}
 		protected static function globalEF(e:Event=null):void {
