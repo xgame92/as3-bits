@@ -17,7 +17,7 @@ package net.tw.util.air {
 		public static const STATUS_UNAVAILABLE:String='unavailable';
 		public static const STATUS_INSTALLED:String='installed';
 		//
-		public var appArguments:Array;
+		public var appArguments:Array=[];
 		//
 		public function AIRAppManager($appID:String, $pubID:String='', $installerURL:String=null, $requiredRuntimeVersion:String='1.0') {
 			setApplicationData($appID, $pubID);
