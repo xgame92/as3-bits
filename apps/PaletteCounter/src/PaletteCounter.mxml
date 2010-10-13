@@ -15,6 +15,8 @@
 			protected var bd:BitmapData;
 			protected var p:Point=new Point();
 			protected var o:Object;
+			protected var lines:Array;
+			protected var curLine:Array;
 			protected function onFileSelect(e:Event):void {
 				f.load();
 			}
@@ -28,6 +30,8 @@
 				img.source=bd;
 				p.x=p.y=0;
 				o={};
+				lines=[];
+				curLine=[];
 				nextPoints();
 			}
 			protected function nextPoints():void {
@@ -38,12 +42,27 @@
 					if (!o[c]) o[c]=1;
 					else o[c]++;
 					//
+					if (curLine.length==0) {
+						curLine.push({color:c, count:1});
+					} else {
+						var lastC:Object=curLine[curLine.length-1];
+						if (lastC.color==c) {
+							lastC.count++;
+						} else {
+							curLine.push({color:c, count:1});
+						}
+					}
+					//
 					p.x++;
 					if (p.x>=bd.width) {
 						p.x=0;
 						p.y++;
+						lines.push(curLine);
+						curLine=[];
 						if (p.y>=bd.height) {
 							updateCount();
+							ta.appendText('\n---\n');
+							appendLines();
 							return;
 						}
 					}
@@ -58,8 +77,19 @@
 					s+='#'+uint(k).toString(16)+': '+o[k]+'\n';
 					c+=o[k];
 				}
-				s+='\n'+bd.width+'x'+bd.height+'='+c;
+				s+='\n'+bd.width+'x'+bd.height+'='+c+'\n';
 				ta.text=s;
+			}
+			protected function appendLines():void {
+				var s:String='';
+				for (var i:int=0; i<lines.length; i++) {
+					s+='\n - Line '+(i+1)+'\n\n';
+					for (var j:int=0; j<lines[i].length; j++) {
+						var o:Object=lines[i][j];
+						s+='#'+uint(o.color).toString(16)+' × '+o.count+'\n';
+					}
+				}
+				ta.appendText(s);
 			}
 		]]>
 	</fx:Script>
