@@ -45,6 +45,7 @@
 		}
 		//
 		public function start():void {
+			if (!url) return;
 			stream.load(url);
 		}
 		protected function stop():void {
