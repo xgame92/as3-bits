@@ -2,6 +2,10 @@ package net.tw.flex.spark.containers {
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	
+	import mx.core.FlexGlobals;
+	import mx.core.IFlexModuleFactory;
+	import mx.styles.CSSStyleDeclaration;
+	
 	import net.tw.flex.spark.containers.skin.ToggleBlockDefaultSkin;
 	
 	import spark.components.SkinnableContainer;
@@ -15,8 +19,19 @@ package net.tw.flex.spark.containers {
 		[SkinPart(required="false")]
 		public var openButton:ToggleButton;
 		//
-		public function ToggleBlock():void {
-			setStyle('skinClass', Class(ToggleBlockDefaultSkin));
+		{
+			(function ():void {
+				var styles:CSSStyleDeclaration=FlexGlobals.topLevelApplication.styleManager.getStyleDeclaration("net.tw.flex.spark.containers.ToggleBlock");
+				if (!styles) {
+					var defStyles:CSSStyleDeclaration = new CSSStyleDeclaration();
+					defStyles.defaultFactory = function():void {
+						this.skinClass = Class(ToggleBlockDefaultSkin);
+					}
+					FlexGlobals.topLevelApplication.styleManager.setStyleDeclaration("net.tw.flex.spark.containers.ToggleBlock", defStyles, true);
+				} else if (!styles.getStyle('skinClass')) {
+					styles.setStyle('skinClass', Class(ToggleBlockDefaultSkin));
+				}
+			}());
 		}
 		//
 		public function get opened():Boolean {
