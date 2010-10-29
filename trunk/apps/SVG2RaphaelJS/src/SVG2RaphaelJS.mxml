@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   pageTitle="SVG2RaphaelJS - TOKI WOKI.">
+	<fx:Style source="style/main.css"/>
+	<s:creationComplete>
+		<![CDATA[
+			fr.addEventListener(Event.SELECT, onSVGSelect);
+		]]>
+	</s:creationComplete>
+	<fx:Script>
+		<![CDATA[
+			/**
+			 * 
+			 * TODO:
+			 *  - Gradients (Radial focus points)
+			 * 
+			 */
+			import com.adobe.serialization.json.JSON;
+			//
+			protected var fr:FileReference=new FileReference();
+			protected var jsOs:Array=[];
+			protected var xml:XML=new XML();
+			//
+			protected function onSVGChange():void {
+				try {
+					// Yes, that "replace" thing is ugly.
+					xml=new XML(taSVG.text.replace('xmlns="http://www.w3.org/2000/svg"', ''));
+				} catch (er:Error) {
+					taRaphaelJS.text='Error';
+					xml=new XML();
+					return;
+				}
+				while (xml..*.(attribute('display')=='none').length()) {
+					delete xml..*.(attribute('display')=='none')[0];
+				}
+				var ar:Array=[];
+				var paths:XMLList=xml..node;
+				var node:XML;
+				var o:Object;
+				var nodeName:String;
+				for each(node in xml..*) {
+					o={};
+					//
+					if (node.@stroke.length()) o.stroke=String(node.@stroke);
+					else o.stroke='none';
+					//
+					nodeName=QName(node.name()).localName;
+					//
+					if (node.@fill.length()) {
+						o.fill=String(node.@fill);
+						if (o.fill.substr(0, 3)=='url') {
+							var fillID:String=o.fill.substring(5, o.fill.length-1);
+							var fill:XML=xml..*.(attribute('id')==fillID)[0];
+							var fillType:String=QName(fill.name()).localName;
+							var stops:Array=[];
+							if (fillType=='linearGradient') {
+								var p1:Point=new Point(tn(fill.@x1), tn(fill.@y1));
+								var p2:Point=new Point(tn(fill.@x2), tn(fill.@y2));
+								var angle:Number = -Math.atan2(p2.y - p1.y, p2.x - p1.x) * 180 / Math.PI;
+								if (angle<0) angle+=360;
+								stops.push(angle);
+							}
+							for each(var stop:XML in fill.stop) {
+								stops.push(String(stop.@style).substr(-7)+':'+100*tn(stop.@offset));
+							}
+							if (fillType=='radialGradient' && nodeName!='circle' && nodeName!='ellipse') {
+								o.fill='#000';
+							} else {
+								o.fill=stops.join('-');
+								if (fillType=='radialGradient') o.fill='r'+o.fill;
+							}
+						} 
+					} else {
+						o.fill='#000';
+					}
+					if (node.@style.length()) {
+						var styles:Array=String(node.@style).split(';');
+						var style:Array;
+						for (var i:int=0; i<styles.length; i++) {
+							style=styles[i].split(':');
+							o[style[0]]=style[1];
+						}
+					}
+					//
+					if (node.@['stroke-width'].length()) o['stroke-width']=tn(node.@['stroke-width']);
+					//
+					if (node.@opacity.length()) o.opacity=tn(node.@opacity);
+					//
+					switch(nodeName) {
+						case 'path':
+							o.type=nodeName;
+							var d:String=node.@d;
+							d=d.replace(/\s+/g, ' ');
+							o.path=d;
+							ar.push(o);
+							break;
+						case 'polygon':
+							o.type='path';
+							o.path='M'+String(node.@points)+'z';
+							ar.push(o);
+							break;
+						case 'line':
+							o.type='path';
+							o.path='M'+tn(node.@x1)+' '+tn(node.@y1)+'L'+tn(node.@x2)+' '+tn(node.@y2);
+							ar.push(o);
+							break;
+						case 'rect':
+							o.type=nodeName;
+							if (node.@x.length()) o.x=tn(node.@x);
+							if (node.@y.length()) o.y=tn(node.@y);
+							o.width=tn(node.@width);
+							o.height=tn(node.@height);
+							ar.push(o);
+							break;
+						case 'circle':
+							o.type=nodeName;
+							if (node.@cx.length()) o.cx=tn(node.@cx);
+							if (node.@cy.length()) o.cy=tn(node.@cy);
+							o.r=tn(node.@r);
+							ar.push(o);
+							break;
+						case 'ellipse':
+							o.type=nodeName;
+							if (node.@cx.length()) o.cx=tn(node.@cx);
+							if (node.@cy.length()) o.cy=tn(node.@cy);
+							o.rx=tn(node.@rx);
+							o.ry=tn(node.@ry);
+							ar.push(o);
+							break;
+						case 'text':
+							if (node.children().length()==0) break; 
+							o.type=nodeName;
+							var tm:Array=String(node.@transform).replace(/[^\s\d\.]/g, '').split(' ');
+							o.x=Math.round(Number(tm[4]));
+							o.y=Math.round(Number(tm[5]));
+							o['font-size']=tn(node.@['font-size']);
+							o['text-anchor']='start';
+							o.text=node.children()[0].toString();
+							ar.push(o);
+							break;
+					}
+				}
+				jsOs=ar;
+				updateOutput();
+			}
+			protected function tn(s:*):Number {
+				return Number(String(s).replace(/[a-z-]/gm, ''));
+			}
+			protected function updateOutput():void {
+				var ar:Array=[];
+				if (rbAbsolute.selected) {
+					ar.push(nsX.value, nsY.value, tn(xml.@width), tn(xml.@height));
+				} else {
+					ar.push(tiElementID.text, tn(xml.@width), tn(xml.@height));
+				}
+				ar=ar.concat(jsOs);
+				taRaphaelJS.text='var '+tiVarName.text+'='+JSON.encode(ar)+';';
+			}
+			protected function onSVGSelect(e:Event):void {
+				fr.addEventListener(Event.COMPLETE, onLoadComplete);
+				fr.load();
+			}
+			protected function onLoadComplete(e:Event):void {
+				taSVG.text=fr.data.readUTFBytes(fr.data.bytesAvailable);
+				onSVGChange();
+			}
+		]]>
+	</fx:Script>
+	<mx:HDividedBox width="100%" height="100%" paddingLeft="10" paddingRight="10" paddingTop="10" paddingBottom="10">
+		<s:VGroup width="100%" height="100%">
+			<s:HGroup width="100%" verticalAlign="middle">
+				<s:Label text="Input: SVG file content" width="100%"/>
+				<s:Button label="Open...">
+					<s:click>
+						<![CDATA[
+							fr.browse([new FileFilter('SVG File', '*.svg')]);
+						]]>
+					</s:click>
+				</s:Button>
+			</s:HGroup>
+			<s:TextArea width="100%" height="100%" id="taSVG" change="onSVGChange()"/>
+		</s:VGroup>
+		<s:VGroup width="100%" height="100%">
+			<s:Label text="Output: Raphaël object" height="21" verticalAlign="middle"/>
+			<s:TextArea width="100%" height="100%" id="taRaphaelJS"/>
+			<s:HGroup width="100%" verticalAlign="middle">
+				<s:Label text="Name of the JS variable" paddingTop="4" width="100%"/>
+				<s:TextInput id="tiVarName" text="mySVG" change="updateOutput()" restrict="a-zA-Z0-9_"/>
+			</s:HGroup>
+			<s:HGroup width="100%" verticalAlign="middle">
+				<s:Label text="Inject" paddingTop="4" width="100%"/>
+				<s:RadioButton label="in Element" id="rbElement" click="updateOutput()"/>
+				<s:RadioButton label="Absolutely" id="rbAbsolute" click="updateOutput()" selected="true"/>
+			</s:HGroup>
+			<s:HGroup width="100%" verticalAlign="middle" visible="{rbElement.selected}" includeInLayout="{rbElement.selected}" height="23">
+				<s:Label text="Element's DOM ID" paddingTop="4" width="100%"/>
+				<s:TextInput id="tiElementID" text="myElementID" restrict="a-zA-Z0-9_" change="updateOutput()"/>
+			</s:HGroup>
+			<s:HGroup width="100%" verticalAlign="middle" visible="{rbAbsolute.selected}" includeInLayout="{rbAbsolute.selected}">
+				<s:Label text="Position (x, y)" paddingTop="2" width="100%"/>
+				<s:NumericStepper id="nsX" change="updateOutput()" maximum="1000"/>
+				<s:NumericStepper id="nsY" change="updateOutput()" maximum="1000"/>
+			</s:HGroup>
+			<s:HGroup width="100%" horizontalAlign="right">
+				<s:Button label="Copy to Clipboard">
+					<s:click>
+						<![CDATA[
+							System.setClipboard(taRaphaelJS.text);
+						]]>
+					</s:click>
+				</s:Button>
+				<s:Button label="Save As...">
+					<s:click>
+						<![CDATA[
+							var tfr:FileReference=new FileReference();
+							tfr.save(taRaphaelJS.text, tiVarName.text+'.js');
+						]]>
+					</s:click>
+				</s:Button>
+			</s:HGroup>
+		</s:VGroup>
+	</mx:HDividedBox>
+</s:Application>
