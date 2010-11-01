@@ -87,6 +87,7 @@
 					if (node.@['stroke-width'].length()) o['stroke-width']=tn(node.@['stroke-width']);
 					//
 					if (node.@opacity.length()) o.opacity=tn(node.@opacity);
+					if (node.@id.length()) o.id=String(node.@id);
 					//
 					switch(nodeName) {
 						case 'path':
