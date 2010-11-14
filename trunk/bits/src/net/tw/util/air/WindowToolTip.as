@@ -54,7 +54,7 @@ package net.tw.util.air {
 			}
 			stage.addEventListener(MouseEvent.MOUSE_MOVE, place);
 			dispatchEvent(new Event(SHOW));
-			place();
+			place(null, true);
 		}
 		public function hide():void {
 			dispatchEvent(new Event(HIDING));
@@ -62,7 +62,7 @@ package net.tw.util.air {
 			_s.removeEventListener(MouseEvent.MOUSE_MOVE, place);
 			dispatchEvent(new Event(HIDE));
 		}
-		protected function place(e:Event=null):void {
+		public function place(e:Event=null, doShow:Boolean=false):void {
 			dispatchEvent(new Event(PLACING));
 			//
 			var dest:int=ScreenMouse.getX(stage)+offset.x;
@@ -73,8 +73,10 @@ package net.tw.util.air {
 			if (dest+nativeWindow.height>Screen.mainScreen.bounds.height) dest-=nativeWindow.height+2*offset.y;
 			nativeWindow.y=dest;
 			//
-			if (!nativeWindow.visible) nativeWindow.visible=true;
-			bringToFront();
+			if (nativeWindow.visible || doShow) {
+				nativeWindow.visible=true;
+				bringToFront();
+			}
 			dispatchEvent(new Event(PLACE));
 		}
 		protected function bringToFront(e:Event=null):void {
