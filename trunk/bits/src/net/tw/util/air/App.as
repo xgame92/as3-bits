@@ -27,9 +27,16 @@ package net.tw.util.air {
 			var ns:Namespace=getNamespace();
 			return getDescriptor().ns::id;
 		}
+		public static function getApplicationRequiredRuntimeVersion():String {
+			return String(getNamespace().uri.split('/').pop());
+		}
 		public static function getVersion():String {
 			var ns:Namespace=getNamespace();
-			return getDescriptor().ns::version;
+			return getDescriptor().ns::version.length() ? getDescriptor().ns::version : getDescriptor().ns::versionNumber;
+		}
+		public static function getVersionLabel():String {
+			var ns:Namespace=getNamespace();
+			return getDescriptor().ns::versionLabel.length() ? getDescriptor().ns::versionLabel : getVersion();
 		}
 		public static function getCopyright():String {
 			var ns:Namespace=getNamespace();
