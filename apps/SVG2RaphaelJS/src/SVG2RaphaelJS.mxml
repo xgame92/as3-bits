@@ -22,6 +22,8 @@
 			protected var fr:FileReference=new FileReference();
 			protected var jsOs:Array=[];
 			protected var xml:XML=new XML();
+			protected var node:XML;
+			protected var idIndices:Object;
 			//
 			protected function onSVGChange():void {
 				try {
@@ -35,11 +37,11 @@
 				while (xml..*.(attribute('display')=='none').length()) {
 					delete xml..*.(attribute('display')=='none')[0];
 				}
-				var ar:Array=[];
+				jsOs=[];
 				var paths:XMLList=xml..node;
-				var node:XML;
 				var o:Object;
 				var nodeName:String;
+				var nodeIndex:uint=0;
 				for each(node in xml..*) {
 					o={};
 					//
@@ -85,9 +87,7 @@
 					}
 					//
 					if (node.@['stroke-width'].length()) o['stroke-width']=tn(node.@['stroke-width']);
-					//
 					if (node.@opacity.length()) o.opacity=tn(node.@opacity);
-					if (node.@id.length()) o.id=String(node.@id);
 					//
 					switch(nodeName) {
 						case 'path':
@@ -95,17 +95,17 @@
 							var d:String=node.@d;
 							d=d.replace(/\s+/g, ' ');
 							o.path=d;
-							ar.push(o);
+							addNode(o);
 							break;
 						case 'polygon':
 							o.type='path';
 							o.path='M'+String(node.@points)+'z';
-							ar.push(o);
+							addNode(o);
 							break;
 						case 'line':
 							o.type='path';
 							o.path='M'+tn(node.@x1)+' '+tn(node.@y1)+'L'+tn(node.@x2)+' '+tn(node.@y2);
-							ar.push(o);
+							addNode(o);
 							break;
 						case 'rect':
 							o.type=nodeName;
@@ -113,14 +113,14 @@
 							if (node.@y.length()) o.y=tn(node.@y);
 							o.width=tn(node.@width);
 							o.height=tn(node.@height);
-							ar.push(o);
+							addNode(o);
 							break;
 						case 'circle':
 							o.type=nodeName;
 							if (node.@cx.length()) o.cx=tn(node.@cx);
 							if (node.@cy.length()) o.cy=tn(node.@cy);
 							o.r=tn(node.@r);
-							ar.push(o);
+							addNode(o);
 							break;
 						case 'ellipse':
 							o.type=nodeName;
@@ -128,7 +128,7 @@
 							if (node.@cy.length()) o.cy=tn(node.@cy);
 							o.rx=tn(node.@rx);
 							o.ry=tn(node.@ry);
-							ar.push(o);
+							addNode(o);
 							break;
 						case 'text':
 							if (node.children().length()==0) break; 
@@ -139,12 +139,15 @@
 							o['font-size']=tn(node.@['font-size']);
 							o['text-anchor']='start';
 							o.text=node.children()[0].toString();
-							ar.push(o);
+							addNode(o);
 							break;
 					}
 				}
-				jsOs=ar;
 				updateOutput();
+			}
+			protected function addNode(o:Object):void {
+				//if (node.@id.length()) idIndices[String(node.@id)]=jsOs.length;
+				jsOs.push(o);
 			}
 			protected function tn(s:*):Number {
 				return Number(String(s).replace(/[a-z-]/gm, ''));
@@ -158,6 +161,24 @@
 				}
 				ar=ar.concat(jsOs);
 				taRaphaelJS.text='var '+tiVarName.text+'='+JSON.encode(ar)+';';
+				/*var lines:Array=['var paper=Raphael('+nsX.value+', '+nsY.value+', '+tn(xml.@width)+', '+tn(xml.@height)+');'];
+				var o:Object;
+				for (var i:int=0; i<jsOs.length; i++) {
+					o=jsOs[i];
+					lines.push('paper.'+o.type+'('+objectToParams(o)+');');
+				}
+				taRaphaelJS.text=lines.join('\n');*/
+			}
+			protected function objectToParams(o:Object):String {
+				var params:Array=[];
+				var val:*;
+				for (var a:String in o) {
+					if (a=='type') continue;
+					val=o[a];
+					if (val is String) params.push("'"+val+"'");
+					else params.push(val);
+				}
+				return params.join(', ');
 			}
 			protected function onSVGSelect(e:Event):void {
 				fr.addEventListener(Event.COMPLETE, onLoadComplete);
