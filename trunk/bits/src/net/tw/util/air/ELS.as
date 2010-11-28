@@ -1,8 +1,13 @@
 package net.tw.util.air {
 	import flash.data.EncryptedLocalStore;
 	import flash.utils.ByteArray;
+	import flash.utils.describeType;
+
 	//
 	public class ELS {
+		public static function get isSupported():Boolean {
+			return EncryptedLocalStore.isSupported;
+		}
 		public static function getItem(name:String):* {
 			if (!hasItem(name)) return null;
 			return EncryptedLocalStore.getItem(name).readObject();

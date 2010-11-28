@@ -2,8 +2,8 @@
 <actionScriptProperties analytics="false" mainApplicationPath="PixelOkr.as" projectUUID="17f9d314-1b17-448c-a8c1-4dbed521c28a" version="6">
   <compiler additionalCompilerArguments="-locale en_US" autoRSLOrdering="true" copyDependentFiles="true" fteInMXComponents="false" generateAccessible="true" htmlExpressInstall="true" htmlGenerate="false" htmlHistoryManagement="true" htmlPlayerVersionCheck="true" includeNetmonSwc="false" outputFolderPath="bin-debug" sourceFolderPath="src" strict="true" targetPlayerVersion="0.0.0" useApolloConfig="false" useDebugRSLSwfs="true" verifyDigests="true" warn="true">
     <compilerSourcePath>
-      <compilerSourcePathEntry kind="1" linkType="1" path="C:/as3/as3-bits/bits/src"/>
-      <compilerSourcePathEntry kind="1" linkType="1" path="C:/as3/hype-hype-605a391/src"/>
+      <compilerSourcePathEntry kind="1" linkType="1" path="C:/as3/svn/as3-bits/bits/src"/>
+      <compilerSourcePathEntry kind="1" linkType="1" path="C:/as3/git/hype/src"/>
     </compilerSourcePath>
     <libraryPath defaultLinkType="0">
       <libraryPathEntry kind="4" path="">

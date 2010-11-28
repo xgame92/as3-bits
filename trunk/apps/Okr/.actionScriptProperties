@@ -2,9 +2,9 @@
 <actionScriptProperties analytics="false" mainApplicationPath="Okr.as" projectUUID="f5686960-6c8d-4882-b99a-f03cd676aaa8" version="6">
   <compiler additionalCompilerArguments="-locale en_US" autoRSLOrdering="true" copyDependentFiles="true" fteInMXComponents="false" generateAccessible="true" htmlExpressInstall="true" htmlGenerate="false" htmlHistoryManagement="true" htmlPlayerVersionCheck="true" includeNetmonSwc="false" outputFolderPath="bin-debug" sourceFolderPath="src" strict="true" targetPlayerVersion="0.0.0" useApolloConfig="false" useDebugRSLSwfs="true" verifyDigests="true" warn="true">
     <compilerSourcePath>
-      <compilerSourcePathEntry kind="1" linkType="1" path="C:/as3/hype-hype-605a391/src"/>
-      <compilerSourcePathEntry kind="1" linkType="1" path="C:/as3/minimalcomps/src"/>
-      <compilerSourcePathEntry kind="1" linkType="1" path="C:/as3/common/src"/>
+      <compilerSourcePathEntry kind="1" linkType="1" path="C:/as3/git/hype/src"/>
+      <compilerSourcePathEntry kind="1" linkType="1" path="C:/as3/svn/minimalcomps/src"/>
+      <compilerSourcePathEntry kind="1" linkType="1" path="C:/as3/local/src"/>
     </compilerSourcePath>
     <libraryPath defaultLinkType="0">
       <libraryPathEntry kind="4" path="">
