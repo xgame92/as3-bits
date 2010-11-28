@@ -16,19 +16,19 @@
 	</natures>
 	<linkedResources>
 		<link>
-			<name>[source path] common-src</name>
+			<name>[source path] hype-src</name>
 			<type>2</type>
-			<location>C:/as3/common/src</location>
+			<location>C:/as3/git/hype/src</location>
 		</link>
 		<link>
-			<name>[source path] hype-hype-605a391-src</name>
+			<name>[source path] local-src</name>
 			<type>2</type>
-			<location>C:/as3/hype-hype-605a391/src</location>
+			<location>C:/as3/local/src</location>
 		</link>
 		<link>
 			<name>[source path] minimalcomps-src</name>
 			<type>2</type>
-			<location>C:/as3/minimalcomps/src</location>
+			<location>C:/as3/svn/minimalcomps/src</location>
 		</link>
 	</linkedResources>
 </projectDescription>
