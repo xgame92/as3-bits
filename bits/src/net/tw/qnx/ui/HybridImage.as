@@ -37,6 +37,7 @@ package net.tw.qnx.ui {
 		override public function setImage(image:Object):void {
 			_gifPlayer.removeEventListener(FrameEvent.FRAME_RENDERED, onFrame);
 			if ((image is String) && handleGIF) {
+				super.setImage(null);
 				_urlLoader.addEventListener(Event.COMPLETE, onLoad);
 				_urlLoader.load(new URLRequest(image as String));
 			} else {
