@@ -72,6 +72,10 @@ package net.tw.util.air {
 			nw.x=(Screen.mainScreen.bounds.width-nw.width)/2;
 			nw.y=(Screen.mainScreen.bounds.height-nw.height)/2;
 		}
+		public static function centerWindowOnWindow(toCenter:NativeWindow, centerOn:NativeWindow):void {
+			toCenter.x=centerOn.x+(centerOn.width-toCenter.width)/2;
+			toCenter.y=centerOn.y+(centerOn.height-toCenter.height)/2;
+		}
 		public static function preventClose(w:NativeWindow, activateOnHide:NativeWindow=null):void {
 			w.addEventListener(Event.CLOSING, function(e:Event):void {
 				e.preventDefault();
