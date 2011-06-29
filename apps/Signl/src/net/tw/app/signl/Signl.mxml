@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   applicationComplete="updateClass()"
+			   minWidth="600" minHeight="450"
+			   pageTitle="Signl — Custom AS3 Signal File Generator — TOKI WOKI.">
+	
+	<fx:Style source="style/main.css"/>
+	
+	<fx:Declarations>
+		<s:ArrayList id="alValueClasses" collectionChange="updateClass()" />
+		<fx:String id="classTemplate"><![CDATA[package [PACKAGE] {
+	[IMPORTS]
+	public class [CLASS_NAME] extends Signal {
+		public function [CLASS_NAME]() {
+			super([VALUE_CLASSES]);
+		}
+	}
+}]]></fx:String>
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			protected var signalClassName:String;
+			protected function getClassContent():String {
+				var s:String=classTemplate;
+				var i:int;
+				var item:Object;
+				
+				var cp:Array=tiPackageClass.text.split('.');
+				signalClassName='';
+				var classPackage:String='';
+				if (cp.length>1) {
+					signalClassName=cp.pop();
+					classPackage=cp.join('.');
+				}
+				s=s.split('[CLASS_NAME]').join(signalClassName);
+				s=s.replace('[PACKAGE]', classPackage);
+				
+				var imports:Array=['import org.osflash.signals.Signal;'];
+				var valueClasses:Array=[];
+				
+				var type:String;
+				for (i=0; i<alValueClasses.length; i++) {
+					item=alValueClasses.getItemAt(i);
+					type=item.type;
+					if (type.indexOf('.')>-1) {
+						var arType:Array=type.split('.');
+						type=arType[arType.length-1];
+						var importStr:String='import '+item.type+';';
+						if (imports.indexOf(importStr)==-1) imports.push(importStr);
+					}
+					valueClasses.push(type);
+				}
+				
+				s=s.replace('[IMPORTS]', imports.join('\n\t'));
+				s=s.replace('[VALUE_CLASSES]', valueClasses.join(', '));
+				//
+				return s;
+			}
+			protected function updateClass():void {
+				callLater(function():void {
+					taClass.text=getClassContent();
+				});
+			}
+			protected function addValueClass():void {
+				alValueClasses.addItem({type:'Object'});
+				updateClass();
+			}
+			protected function saveAs():void {
+				var fr:FileReference=new FileReference();
+				fr.save(taClass.text, signalClassName+'.as');
+			}
+		]]>
+	</fx:Script>
+	
+	<mx:HDividedBox left="10" right="10" top="10" bottom="10">
+		<s:VGroup height="100%" width="30%">
+			<s:Label text="Signal Package and Name" fontWeight="bold"/>
+			<s:TextInput width="100%" text="signals.MyCustomSignal" id="tiPackageClass" change="updateClass()"/>
+			<s:Label text="Value Classes" fontWeight="bold"/>
+			<mx:DataGrid height="100%" width="100%" id="dgValueClasses"
+						 dataProvider="{alValueClasses}"
+						 editable="true"
+						 sortableColumns="false" draggableColumns="false"
+						 dragEnabled="true" dragMoveEnabled="true" dropEnabled="true">
+				<mx:columns>
+					<mx:DataGridColumn headerText="Type" dataField="type"/>
+				</mx:columns>
+			</mx:DataGrid>
+			<s:HGroup width="100%">
+				<s:Button label="+" click="addValueClass()" />
+				<s:Button label="-" enabled="{dgValueClasses.selectedItem}" click="alValueClasses.removeItemAt(dgValueClasses.selectedIndex)" />
+			</s:HGroup>
+		</s:VGroup>
+		<s:VGroup width="70%" height="100%">
+			<s:TextArea width="100%" height="100%" id="taClass"/>
+			<s:HGroup horizontalAlign="right" width="100%" verticalAlign="middle">
+				<s:Label text="Signl — Custom AS3 Signal File Generator — TOKI WOKI." color="#848484" paddingTop="2" />
+				<s:Button label="Copy to Clipboard" click="System.setClipboard(taClass.text)" />
+				<s:Button label="Save As..." click="saveAs()" />
+			</s:HGroup>
+		</s:VGroup>
+	</mx:HDividedBox>
+	
+</s:Application>
