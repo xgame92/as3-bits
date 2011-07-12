@@ -65,7 +65,7 @@
                             right.fullScreenStates="0" top.fullScreenStates="0" />
 			
 			<s:Label id="subtitleLabel"
-					 fontSize="24" textAlign="center"
+					 fontSize="{hostComponent.width/24}" textAlign="center"
 					 left="20" right="20" bottom="34"
 					 color="#ffffff" fontWeight="bold">
 				<s:filters>
