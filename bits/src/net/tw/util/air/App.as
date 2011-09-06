@@ -7,7 +7,7 @@ package net.tw.util.air {
 	import flash.geom.Point;
 	import flash.system.Capabilities;
 	
-	import mx.core.Window;
+	//import mx.core.Window;
 	
 	import net.tw.util.OS;
 	//
@@ -59,7 +59,7 @@ package net.tw.util.air {
 			return File.applicationDirectory.resolvePath(absAppDir.getRelativePath(f)).url;
 		}
 		//
-		public static function centerWindow(w:*, offset:Point=null):void {
+		/*public static function centerWindow(w:*, offset:Point=null):void {
 			if (!(w is NativeWindow) && !(w is Window)) {
 				throw(new ArgumentError());
 				return;
@@ -67,7 +67,7 @@ package net.tw.util.air {
 			var o:*=w is NativeWindow ? w : w.nativeWindow;
 			o.x=(Screen.mainScreen.bounds.width-o.width)/2+(offset ? offset.x : 0);
 			o.y=(Screen.mainScreen.bounds.height-o.height)/2+(offset ? offset.y : 0);
-		}
+		}*/
 		public static function centerNativeWindow(nw:NativeWindow):void {
 			nw.x=(Screen.mainScreen.bounds.width-nw.width)/2;
 			nw.y=(Screen.mainScreen.bounds.height-nw.height)/2;
