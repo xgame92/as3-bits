@@ -7,8 +7,6 @@ package net.tw.util.air {
 	import flash.geom.Point;
 	import flash.system.Capabilities;
 	
-	//import mx.core.Window;
-	
 	import net.tw.util.OS;
 	//
 	public class App {
@@ -88,6 +86,9 @@ package net.tw.util.air {
 				e.preventDefault();
 				w.minimize();
 			});
+		}
+		public static function get ctrlPrefix():String {
+			return runningOnMac() ? '⌘' : 'Ctrl + ';
 		}
 	}
 }
