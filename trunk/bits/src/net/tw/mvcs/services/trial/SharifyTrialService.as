@@ -10,6 +10,7 @@ package net.tw.mvcs.services.trial {
 	import net.tw.mvcs.services.trial.vo.SharifyTrialStatus;
 	
 	import org.robotlegs.mvcs.Actor;
+	import net.tw.mvcs.services.trial.vo.TrialRegisterCredentials;
 	
 	public class SharifyTrialService extends Actor {
 		
