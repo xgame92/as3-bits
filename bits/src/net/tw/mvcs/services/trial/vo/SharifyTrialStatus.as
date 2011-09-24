@@ -23,6 +23,15 @@ package net.tw.mvcs.services.trial.vo {
 			_daysRemaing = value;
 		}
 		
+		protected var _userName:String;
+		public function get userName():String {
+			return _userName;
+		}
+		public function set userName(value:String):void {
+			if (_userName == value) return;
+			_userName = value;
+		}
+		
 		public function get pending():Boolean {
 			return statusID==0;
 		}
