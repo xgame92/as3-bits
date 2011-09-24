@@ -6,11 +6,13 @@ package net.tw.mvcs.services.trial {
 	import it.sharify.SharifyStatus;
 	import it.sharify.event.SharifyResponseEvent;
 	
+	import mx.utils.ObjectUtil;
+	
 	import net.tw.mvcs.services.trial.signals.TrialStatusReceived;
 	import net.tw.mvcs.services.trial.vo.SharifyTrialStatus;
+	import net.tw.mvcs.services.trial.vo.TrialRegisterCredentials;
 	
 	import org.robotlegs.mvcs.Actor;
-	import net.tw.mvcs.services.trial.vo.TrialRegisterCredentials;
 	
 	public class SharifyTrialService extends Actor {
 		
@@ -37,12 +39,18 @@ package net.tw.mvcs.services.trial {
 			_sa.checkLicenseStatus();
 		}
 		protected function onSharifyResponse(e:SharifyResponseEvent):void {
-			_status=new SharifyTrialStatus(e.status);
 			
 			// !!! DEBUG
-			//_status=new SharifyTrialStatus(e.status==101 ? 103 : e.status);
+			//e.status=103;
+			//trace(e.status);
+			//if (e.status==101) e.status=103;
+			//if (e.status==102) e.status=101;
+			//if (e.status==901) e.status=105;
+			
+			_status=new SharifyTrialStatus(e.status);
 			
 			if (status.isTrial) status.daysRemaing=uint(e.data);
+			else if (status.isRegistered) _status.userName=e.data;
 			dispatchStatus();
 		}
 		public function dispatchStatus():void {
