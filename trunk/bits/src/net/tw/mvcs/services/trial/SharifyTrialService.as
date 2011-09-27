@@ -12,9 +12,9 @@ package net.tw.mvcs.services.trial {
 	import net.tw.mvcs.services.trial.vo.SharifyTrialStatus;
 	import net.tw.mvcs.services.trial.vo.TrialRegisterCredentials;
 	
-	import org.robotlegs.mvcs.Actor;
+	//import org.robotlegs.mvcs.Actor;
 	
-	public class SharifyTrialService extends Actor {
+	public class SharifyTrialService /*extends Actor*/ {
 		
 		protected var _sa:ISharify;
 		protected var _status:SharifyTrialStatus;
@@ -47,7 +47,7 @@ package net.tw.mvcs.services.trial {
 			//if (e.status==102) e.status=101;
 			//if (e.status==901) e.status=105;
 			
-			_status=new SharifyTrialStatus(e.status);
+			_status.statusID=e.status;
 			
 			if (status.isTrial) status.daysRemaing=uint(e.data);
 			else if (status.isRegistered) _status.userName=e.data;
