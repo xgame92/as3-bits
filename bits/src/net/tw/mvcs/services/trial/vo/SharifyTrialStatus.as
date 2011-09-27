@@ -13,6 +13,16 @@ package net.tw.mvcs.services.trial.vo {
 		public function set statusID(value:int):void {
 			if (_statusID == value) return;
 			_statusID = value;
+			
+			if (isTrial) {
+				_state=SharifyTrialState.TRIAL;
+			} else if (isTrialTimedOut) {
+				_state=SharifyTrialState.TRIAL_TIMED_OUT;
+			} else if (isRegistered || isRegistrationSuccess || isErrorAlreadyRegistered) {
+				_state=SharifyTrialState.REGISTERED;
+			} else if (isErrorRegistrationRevoked) {
+				_state=SharifyTrialState.REVOKED;
+			}
 		}
 		protected var _daysRemaing:int;
 		public function get daysRemaing():int {
@@ -72,6 +82,23 @@ package net.tw.mvcs.services.trial.vo {
 		}
 		public function get cannotAccessFeatures():Boolean {
 			return isErrorRegistrationRevoked || isTrialTimedOut;
+		}
+		
+		protected var _state:String;
+		public function get state():String {
+			return _state;
+		}
+		public function get stateIsTrial():Boolean {
+			return _state==SharifyTrialState.TRIAL;
+		}
+		public function get stateIsTrialTimedOut():Boolean {
+			return _state==SharifyTrialState.TRIAL_TIMED_OUT;
+		}
+		public function get stateIsRegistered():Boolean {
+			return _state==SharifyTrialState.REGISTERED;
+		}
+		public function get stateIsRevoked():Boolean {
+			return _state==SharifyTrialState.REVOKED;
 		}
 		
 		public function toString():String {
