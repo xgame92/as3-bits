@@ -12,9 +12,7 @@ package net.tw.mvcs.services.trial {
 	import net.tw.mvcs.services.trial.vo.SharifyTrialStatus;
 	import net.tw.mvcs.services.trial.vo.TrialRegisterCredentials;
 	
-	//import org.robotlegs.mvcs.Actor;
-	
-	public class SharifyTrialService /*extends Actor*/ {
+	public class SharifyTrialService {
 		
 		protected var _sa:ISharify;
 		protected var _status:SharifyTrialStatus;
@@ -32,7 +30,9 @@ package net.tw.mvcs.services.trial {
 			sharifyFactory.addEventListener(Event.COMPLETE, onSharifyFactoryReady);
 		}
 		protected function onSharifyFactoryReady(e:Event):void {
-			_sa = (e.target as SharifyFactory).getInstance();
+			var tg:SharifyFactory=e.target as SharifyFactory;
+			tg.removeEventListener(Event.COMPLETE, onSharifyFactoryReady);
+			_sa=tg.getInstance();
 			
 			_sa.init(settings.appID);
 			_sa.addEventListener(SharifyResponseEvent.SHARIFY_RESPONSE, onSharifyResponse);
