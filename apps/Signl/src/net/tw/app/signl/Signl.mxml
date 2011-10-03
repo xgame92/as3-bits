@@ -3,7 +3,6 @@
 			   xmlns:s="library://ns.adobe.com/flex/spark" 
 			   xmlns:mx="library://ns.adobe.com/flex/mx"
 			   applicationComplete="updateClass()"
-			   minWidth="600" minHeight="450"
 			   pageTitle="Signl — Custom AS3 Signal File Generator — TOKI WOKI.">
 	
 	<fx:Style source="style/main.css"/>
@@ -12,12 +11,16 @@
 		<s:ArrayList id="alValueClasses" collectionChange="updateClass()" />
 		<fx:String id="classTemplate"><![CDATA[package [PACKAGE] {
 	[IMPORTS]
-	public class [CLASS_NAME] extends Signal {
-		public function [CLASS_NAME]() {
-			super([VALUE_CLASSES]);
-		}
+	public class [CLASS_NAME] extends [SUPER_CLASS] {
+		public function [CLASS_NAME]([CONSTRUCTOR_ARGS]) {
+			super([SUPER_CALL_ARGS]);
+		}[DISPATCH_VALUES_METHOD]
 	}
 }]]></fx:String>
+		<fx:String id="dispatchValuesTemplate"><![CDATA[
+		public function dispatchValues([DISPATCH_VALUES_ARGS]):void {
+			dispatch([DISPATCH_VALUES]);	
+		}]]></fx:String>
 	</fx:Declarations>
 	
 	<fx:Script>
@@ -35,13 +38,27 @@
 					signalClassName=cp.pop();
 					classPackage=cp.join('.');
 				}
+				var superClass:String=superClassDD.selectedItem.type;
+				var superClassName:String=superClass.split('.').pop();
+				
 				s=s.split('[CLASS_NAME]').join(signalClassName);
 				s=s.replace('[PACKAGE]', classPackage);
+				s=s.replace('[SUPER_CLASS]', superClassName);
+
+				var imports:Array=['import '+superClass+';'];
+				var superCallArgs:Array=[];
 				
-				var imports:Array=['import org.osflash.signals.Signal;'];
-				var valueClasses:Array=[];
+				var constructorArgs:String='';
+				if (superClassName=='DeluxeSignal') {
+					constructorArgs='target:Object=null';
+					superCallArgs.push('target');
+				}
+				s=s.replace('[CONSTRUCTOR_ARGS]', constructorArgs);
 				
 				var type:String;
+				var dispatchValuesArgs:Array=[];
+				var dispatchValuesParams:Array=[];
+				
 				for (i=0; i<alValueClasses.length; i++) {
 					item=alValueClasses.getItemAt(i);
 					type=item.type;
@@ -51,11 +68,24 @@
 						var importStr:String='import '+item.type+';';
 						if (imports.indexOf(importStr)==-1) imports.push(importStr);
 					}
-					valueClasses.push(type);
+					superCallArgs.push(type);
+					
+					dispatchValuesArgs.push('p'+(i+1)+':'+type);
+					dispatchValuesParams.push('p'+(i+1));
 				}
 				
 				s=s.replace('[IMPORTS]', imports.join('\n\t'));
-				s=s.replace('[VALUE_CLASSES]', valueClasses.join(', '));
+				s=s.replace('[SUPER_CALL_ARGS]', superCallArgs.join(', '));
+				
+				trace(cbDispatchMethod.selected, dispatchValuesArgs);
+				if (!cbDispatchMethod.selected || dispatchValuesArgs.length==0) {
+					s=s.replace('[DISPATCH_VALUES_METHOD]', '');
+				} else {
+					var dispatchValueMethod:String=dispatchValuesTemplate;
+					dispatchValueMethod=dispatchValueMethod.replace('[DISPATCH_VALUES_ARGS]', dispatchValuesArgs.join(', '));
+					dispatchValueMethod=dispatchValueMethod.replace('[DISPATCH_VALUES]', dispatchValuesParams.join(', '));
+					s=s.replace('[DISPATCH_VALUES_METHOD]', dispatchValueMethod);
+				}
 				//
 				return s;
 			}
@@ -79,6 +109,23 @@
 		<s:VGroup height="100%" width="30%">
 			<s:Label text="Signal Package and Name" fontWeight="bold"/>
 			<s:TextInput width="100%" text="signals.MyCustomSignal" id="tiPackageClass" change="updateClass()"/>
+			<s:Label fontWeight="bold" text="Super Class"/>
+			<s:DropDownList id="superClassDD" width="100%" requireSelection="true" change="updateClass()">
+				<s:dataProvider>
+					<s:ArrayCollection>
+						<fx:Object label="Signal" type="org.osflash.signals.Signal" />
+						<fx:Object label="DeluxeSignal" type="org.osflash.signals.DeluxeSignal" />
+						<fx:Object label="PrioritySignal" type="org.osflash.signals.PrioritySignal" />
+						<fx:Object label="SingleSignal" type="org.osflash.signals.SingleSignal" />
+						<!--<fx:Object label="NativeSignal" type="org.osflash.signals.natives.NativeSignal" />
+						<fx:Object label="NativeRelaySignal" type="org.osflash.signals.natives.NativeRelaySignal" />
+						<fx:Object label="NativeMappedSignal" type="org.osflash.signals.natives.NativeMappedSignal" />-->
+					</s:ArrayCollection>
+				</s:dataProvider>
+			</s:DropDownList>
+			<s:CheckBox id="cbDispatchMethod" width="100%"
+						label="Add dispatchValues method"
+						selected="true" change="updateClass()"/>
 			<s:Label text="Value Classes" fontWeight="bold"/>
 			<mx:DataGrid height="100%" width="100%" id="dgValueClasses"
 						 dataProvider="{alValueClasses}"
