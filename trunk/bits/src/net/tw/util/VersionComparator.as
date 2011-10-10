@@ -6,15 +6,15 @@ package net.tw.util {
 			
 			if (currentVersion==updateVersion) return false;
 			
-			var ar1:Array=currentVersion.split('.');
-			var ar2:Array=updateVersion.split('.');
-			var maxLength:uint=Math.max(ar1.length, ar2.length);
-			if (ar1.length!=maxLength) while (ar1.length<maxLength) ar1.push('0');
-			if (ar2.length!=maxLength) while (ar2.length<maxLength) ar2.push('0');
+			var arCurrent:Array=currentVersion.split('.');
+			var arUpdate:Array=updateVersion.split('.');
+			var maxLength:uint=Math.max(arCurrent.length, arUpdate.length);
+			if (arCurrent.length!=maxLength) while (arCurrent.length<maxLength) arCurrent.push('0');
+			if (arUpdate.length!=maxLength) while (arUpdate.length<maxLength) arUpdate.push('0');
 			
 			for (var i:int=0; i<maxLength; i++) {
-				if (uint(ar1[i])>uint(ar2[i])) return false;
-				if (uint(ar1[i])<uint(ar2[i])) return true;
+				if (uint(arCurrent[i])>uint(arUpdate[i])) return false;
+				if (uint(arCurrent[i])<uint(arUpdate[i])) return true;
 			}
 			
 			return false;
