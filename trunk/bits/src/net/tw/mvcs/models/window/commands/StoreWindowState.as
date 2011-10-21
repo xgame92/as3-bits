@@ -1,0 +1,16 @@
+package net.tw.mvcs.models.window.commands {
+	import flash.display.NativeWindow;
+	
+	import net.tw.mvcs.models.window.WindowStateModel;
+	
+	import org.robotlegs.mvcs.SignalCommand;
+	
+	public class StoreWindowState extends SignalCommand {
+		[Inject]
+		public var nativeWindow:NativeWindow;
+		
+		override public function execute():void {
+			WindowStateModel.storeWindowState(nativeWindow);
+		}
+	}
+}
