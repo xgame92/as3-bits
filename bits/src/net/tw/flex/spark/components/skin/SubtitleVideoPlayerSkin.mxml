@@ -65,9 +65,9 @@
                             right.fullScreenStates="0" top.fullScreenStates="0" />
 			
 			<s:Label id="subtitleLabel"
-					 fontSize="{hostComponent.width/24}" textAlign="center"
+					 fontSize="{hostComponent.width/28}" textAlign="center"
 					 left="20" right="20" bottom="34"
-					 color="#ffffff" fontWeight="bold">
+					 color="#ffffff">
 				<s:filters>
 					<s:GlowFilter color="#000000" strength="10" />
 				</s:filters>
@@ -88,7 +88,7 @@
                             focusIn="event.target.depth=1" focusOut="event.target.depth=0" />
                     
                     <!-- scrubbar + the currentTime/duration labels -->
-                    <s:Group left="39" right="75" top="0" bottom="0">
+                    <s:Group left="39" right="112" top="0" bottom="0">
                           
                         <!-- background for scrubbar + the currentTime/duration -->
                         <s:Rect left="0" right="0" top="0" bottom="0">
@@ -158,11 +158,15 @@
                     
                     <!--- @copy spark.components.VideoPlayer#volumeBar -->
                     <s:VolumeBar id="volumeBar" snapInterval=".01" stepSize=".01" liveDragging="true"
-                            right="37" bottom="0" 
+                            right="74" bottom="0" 
                             layoutDirection="ltr"
                             skinClass="spark.skins.spark.mediaClasses.normal.VolumeBarSkin"
                             skinClass.fullScreenStates="spark.skins.spark.mediaClasses.fullScreen.VolumeBarSkin"
                             focusIn="event.target.depth=1" focusOut="event.target.depth=0" />
+					
+					<s:ToggleButton id="subtitleToggleButton" right="37" bottom="0" 
+									skinClass="net.tw.flex.spark.components.skin.SubtitleToggleButtonSkin"
+									focusIn="event.target.depth=1" focusOut="event.target.depth=0" />
                     
                     <!--- @copy spark.components.VideoPlayer#fullScreenButton -->
                     <s:Button id="fullScreenButton" right="0" bottom="0" label="Fullscreen" 

@@ -13,6 +13,7 @@ package net.tw.flex.spark.components {
 	import org.osmf.media.MediaPlayerState;
 	
 	import spark.components.Label;
+	import spark.components.ToggleButton;
 	
 	public class SubtitleVideoPlayer extends SmoothVideoPlayer {
 		protected var _ns:NetStream;
@@ -27,8 +28,18 @@ package net.tw.flex.spark.components {
 			setStyle('skinClass', SubtitleVideoPlayerSkin);
 		}
 		
+		override protected function createChildren():void {
+			super.createChildren();
+			
+			subtitleLabel.visible=false;
+			subtitleToggleButton.addEventListener(Event.CHANGE, onSubtitleVisibleChange);
+		}
+		
 		[SkinPart(required="true", type="spark.components.Label")]
 		public var subtitleLabel:Label;
+		
+		[SkinPart(required="true", type="spark.components.ToggleButton")]
+		public var subtitleToggleButton:ToggleButton;
 		
 		override public function set source(value:Object):void {
 			super.source=value;
@@ -56,6 +67,23 @@ package net.tw.flex.spark.components {
 					_ns.pause();
 					break;
 			}
+		}
+		
+		private var _subtitleVisible:Boolean;
+		[Bindable]
+		public function get subtitleVisible():Boolean {
+			return _subtitleVisible;
+		}
+		public function set subtitleVisible(value:Boolean):void {
+			if (_subtitleVisible == value) return;
+			_subtitleVisible = value;
+			
+			subtitleLabel.visible=value;
+			subtitleToggleButton.selected=value;
+		}
+		
+		protected function onSubtitleVisibleChange(e:Event):void {
+			subtitleVisible=subtitleToggleButton.selected;
 		}
 	}
 }
