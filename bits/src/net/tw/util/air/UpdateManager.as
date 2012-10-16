@@ -43,11 +43,12 @@
 		load the application.xml file
 		*/
 		protected function loadApplicationFile():void{
-			var appXml:XML = NativeApplication.nativeApplication.applicationDescriptor;
+			/*var appXml:XML = NativeApplication.nativeApplication.applicationDescriptor;
 			var ns:Namespace = appXml.namespace();
 			var  appId:String = appXml.ns::id[0];
 			appVersion = appXml.ns::version[0];
-			var appName:String = appXml.ns::filename[0];
+			var appName:String = appXml.ns::filename[0];*/
+			appVersion=App.getVersion();
 			loadRemoteFile();
 		}
 		/*
@@ -70,6 +71,7 @@
 			version = XML(event.result);
 			remoteVersion=version.@version;
 			remoteMessage=version.@message;
+			
 			if((appVersion != remoteVersion) && version.@forceUpdate == true){
 				getUpdate();
 			} else if(appVersion != remoteVersion) {

@@ -3,9 +3,7 @@ package net.tw.mvcs.services.track {
 	
 	import flash.display.DisplayObject;
 	
-	import org.robotlegs.mvcs.Actor;
-	
-	public class TrackingService extends Actor {
+	public class TrackingService {
 		
 		[Inject]
 		public var settings:ITrackingServiceSettings;

@@ -1,0 +1,105 @@
+<?xml version="1.0"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 preinitialize="init()">
+
+	<fx:Metadata>
+		[Event(name="sourceChanged", type="net.tw.flex.spark.components.events.ClippedImageSourceChangeEvent")]
+	</fx:Metadata>
+
+	<fx:Script><![CDATA[
+		import net.tw.flex.spark.components.events.ClippedImageSourceChangeEvent;
+
+		protected var _loader:Loader;
+
+		protected var _source:String;
+		protected var _sourceChanged:Boolean;
+
+		protected var _bd:BitmapData;
+
+		protected var _clipRect:Rectangle = new Rectangle(0, 0, 100, 100);
+		protected var _clipRectChanged:Boolean;
+
+		protected var _referencePoint:Point = new Point();
+
+		protected var _sourceWidth:Number;
+		protected var _sourceHeight:Number;
+
+		public function init():void {
+			_loader = new Loader();
+		}
+
+		public function get source():String {
+			return _source;
+		}
+
+		public function set source(value:String):void {
+			if (value == source) return;
+			_source = value;
+			_sourceChanged = true;
+			invalidateProperties();
+		}
+
+		protected function onImageLoaded(e:Event):void {
+			_loader.contentLoaderInfo.removeEventListener(Event.COMPLETE, onImageLoaded);
+
+			_bd = (_loader.contentLoaderInfo.content as Bitmap).bitmapData;
+			_sourceWidth = _bd.width;
+			_sourceHeight = _bd.height;
+
+			_loader.unload();
+
+			if (clipRect) {
+				_clipRectChanged = true;
+				invalidateProperties();
+			}
+		}
+
+		public function get sourceWidth():Number {
+			return _sourceWidth;
+		}
+
+		public function get sourceHeight():Number {
+			return _sourceHeight;
+		}
+
+		public function get clipRect():Rectangle {
+			return _clipRect;
+		}
+
+		public function set clipRect(value:Rectangle):void {
+			if (value==_clipRect || value.equals(_clipRect)) return;
+			_clipRect = value;
+			_clipRectChanged = true;
+			invalidateProperties();
+		}
+
+		override protected function commitProperties():void {
+			super.commitProperties();
+
+			if (_sourceChanged) {
+				_sourceChanged = false;
+				_loader.load(new URLRequest(_source));
+				_loader.contentLoaderInfo.addEventListener(Event.COMPLETE, onImageLoaded);
+			}
+
+			if (_clipRectChanged) {
+				_clipRectChanged = false;
+
+				var clippedBD:BitmapData = new BitmapData(clipRect.width, clipRect.height);
+				clippedBD.copyPixels(_bd, clipRect, _referencePoint);
+
+				clippedImage.source = clippedBD;
+
+				clippedBD.lock();
+				clippedBD = null;
+
+				dispatchEvent(new ClippedImageSourceChangeEvent(ClippedImageSourceChangeEvent.SOURCE_CHANGED));
+			}
+		}
+		]]></fx:Script>
+
+	<s:Image id="clippedImage" />
+
+</s:Group>
