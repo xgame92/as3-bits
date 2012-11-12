@@ -80,22 +80,28 @@
 
 			if (_sourceChanged) {
 				_sourceChanged = false;
-				_loader.load(new URLRequest(_source));
-				_loader.contentLoaderInfo.addEventListener(Event.COMPLETE, onImageLoaded);
+				if (_source) {
+					_loader.load(new URLRequest(_source));
+					_loader.contentLoaderInfo.addEventListener(Event.COMPLETE, onImageLoaded);
+				} else {
+					clippedImage.source=null;
+				}
 			}
 
 			if (_clipRectChanged) {
 				_clipRectChanged = false;
 
-				var clippedBD:BitmapData = new BitmapData(clipRect.width, clipRect.height);
-				clippedBD.copyPixels(_bd, clipRect, _referencePoint);
+				if (_source) {
+					var clippedBD:BitmapData = new BitmapData(clipRect.width || 1, clipRect.height || 1);
+					clippedBD.copyPixels(_bd, clipRect, _referencePoint);
 
-				clippedImage.source = clippedBD;
+					clippedImage.source = clippedBD;
 
-				clippedBD.lock();
-				clippedBD = null;
+					clippedBD.lock();
+					clippedBD = null;
 
-				dispatchEvent(new ClippedImageSourceChangeEvent(ClippedImageSourceChangeEvent.SOURCE_CHANGED));
+					dispatchEvent(new ClippedImageSourceChangeEvent(ClippedImageSourceChangeEvent.SOURCE_CHANGED));
+				}
 			}
 		}
 		]]></fx:Script>
