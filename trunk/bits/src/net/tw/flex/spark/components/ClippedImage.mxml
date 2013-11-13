@@ -92,15 +92,19 @@
 				_clipRectChanged = false;
 
 				if (_source) {
-					var clippedBD:BitmapData = new BitmapData(clipRect.width || 1, clipRect.height || 1);
-					clippedBD.copyPixels(_bd, clipRect, _referencePoint);
+					try {
+						var clippedBD:BitmapData = new BitmapData(clipRect.width || 1, clipRect.height || 1);
+						clippedBD.copyPixels(_bd, clipRect, _referencePoint);
 
-					clippedImage.source = clippedBD;
+						clippedImage.source = clippedBD;
 
-					clippedBD.lock();
-					clippedBD = null;
+						clippedBD.lock();
+						clippedBD = null;
 
-					dispatchEvent(new ClippedImageSourceChangeEvent(ClippedImageSourceChangeEvent.SOURCE_CHANGED));
+						dispatchEvent(new ClippedImageSourceChangeEvent(ClippedImageSourceChangeEvent.SOURCE_CHANGED));
+					} catch (er:Error) {
+						trace(er);
+					}
 				}
 			}
 		}
